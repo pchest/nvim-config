@@ -7,3 +7,43 @@ snippet eqa "equation environment" b
 	$2
 \end{equation}
 endsnippet
+
+snippet tt "The \texttt{} command for typewriter-style font"
+\texttt{$1}$0
+endsnippet
+
+snippet ff "The LaTeX \frac{}{} command"
+\frac{$1}{$2}$0
+endsnippet
+
+snippet ital "The LaTeX \textit{} command"
+\textit{$1}$0
+endsnippet
+
+snippet bold "The LaTeX \textbf{} command"
+\textbf{$1}$0
+endsnippet
+
+snippet fr "The LaTeX \frame{} command"
+\begin{frame}{$1}
+	$0
+\end{frame}
+endsnippet
+
+snippet ig "The LaTeX \includegraphics{} command"
+\begin{figure}
+	\centering
+	\caption{$1}
+	\includegraphics[scale=$2]{$3}
+	\label{fig:$4}
+\end{figure}
+endsnippet
+
+
+snippet bl "The LaTeX \block{} command"
+\begin{block}{$1}
+	$0
+\end{block}
+endsnippet
+
+
