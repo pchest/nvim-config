@@ -52,7 +52,7 @@ let g:Lf_WildIgnore = {
 
 " Do not show fancy icons for Linux server.
 if g:is_linux
-  let g:Lf_ShowDevIcons = 0
+  let g:Lf_ShowDevIcons = 1
 endif
 
 " Only fuzzy-search files names
@@ -277,7 +277,9 @@ if executable('latex')
       call jobstart(l:cmd + [line('.'), l:out, l:src_file_path])
     endfunction
   endif
+  let g:vimtex_view_general_viewer = 'zathura'
 endif
+
 
 """"""""""""""""""""""""""""vim-matchup settings"""""""""""""""""""""""""""""
 " Improve performance

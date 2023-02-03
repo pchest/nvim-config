@@ -1,2 +1,2 @@
-vim.o.textwidth = 120
+vim.o.textwidth = 240
 vim.o.wrap = true

@@ -44,9 +44,9 @@ set backup  " create backup for files
 set backupcopy=yes  " copy the original file to backupdir and overwrite it
 
 " General tab settings
-set tabstop=2       " number of visual spaces per TAB
-set softtabstop=2   " number of spaces in tab when editing
-set shiftwidth=2    " number of spaces to use for autoindent
+set tabstop=4       " number of visual spaces per TAB
+set softtabstop=4   " number of spaces in tab when editing
+set shiftwidth=4    " number of spaces to use for autoindent
 set expandtab       " expand tab to spaces so that tabs are spaces
 
 " Set matching pairs of characters and highlight matching brackets
@@ -70,7 +70,7 @@ set showbreak=↪
 set wildmode=list:longest
 
 " Minimum lines to keep above and below cursor when scrolling
-set scrolloff=3
+set scrolloff=10
 
 " Use mouse to select and resize windows, etc.
 set mouse=nic  " Enable mouse in several mode
@@ -144,8 +144,8 @@ set formatoptions+=mM
 
 " Tilde (~) is an operator, thus must be followed by motions like `e` or `w`.
 set tildeop
-
-set synmaxcol=250  " Text after this column number is not highlighted
+" Original value 250
+set synmaxcol=500  " Text after this column number is not highlighted
 set nostartofline
 
 " External program to use for grep command
