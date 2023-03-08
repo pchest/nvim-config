@@ -140,7 +140,7 @@ set virtualedit=block  " Virtual edit is useful for visual block edit
 
 " Correctly break multi-byte characters such as CJK,
 " see https://stackoverflow.com/q/32669814/6064933
-set formatoptions+=t
+set formatoptions+=l
 
 " Tilde (~) is an operator, thus must be followed by motions like `e` or `w`.
 set tildeop
