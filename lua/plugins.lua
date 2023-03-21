@@ -107,6 +107,9 @@ packer.startup {
       config = [[require('config.hlslens')]],
     }
 
+    --- Interactive python code
+    use { "geg2102/nvim-python-repl" }
+
     -- File search, tag search and more
     if vim.g.is_win then
       use { "Yggdroot/LeaderF", cmd = "Leaderf" }

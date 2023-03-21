@@ -40,3 +40,4 @@ for _, name in ipairs(core_conf_files) do
 end
 
 require'lspconfig'.pyright.setup{}
+require("nvim-python-repl").setup()
