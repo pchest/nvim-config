@@ -358,6 +358,14 @@ packer.startup {
       end,
     }
 
+    -- R packages
+    use { 'ncm2/ncm2' }
+    use { 'roxma/nvim-yarp' }
+    use { 'jalvesaq/Nvim-R' }
+    use { 'jalvesaq/nvimcom' }
+    use { 'gaalcaras/ncm-R' }
+    use { 'roxma/vim-hug-neovim-rpc' }
+
     -- show and trim trailing whitespaces
     use { "jdhao/whitespace.nvim", event = "VimEnter" }
 
