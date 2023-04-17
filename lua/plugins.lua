@@ -117,6 +117,8 @@ packer.startup {
       use { "Yggdroot/LeaderF", cmd = "Leaderf", run = ":LeaderfInstallCExtension" }
     end
 
+    use { "nvim-lua/plenary.nvim" }
+
     use {
       "nvim-telescope/telescope.nvim",
       cmd = "Telescope",
@@ -394,6 +396,20 @@ packer.startup {
 ---          }
 ---        end
 ---      }
+    -- Open-ai
+---    use {
+---        "jackMort/ChatGPT.nvim",
+---            config = function()
+---                require("chatgpt").setup({
+---        -- optional configuration
+---                })
+---            end,
+---            requires = {
+---                "MunifTanjim/nui.nvim",
+---                "nvim-lua/plenary.nvim",
+---                "nvim-telescope/telescope.nvim"
+---            }
+---    }
 
 
     -- file explorer
