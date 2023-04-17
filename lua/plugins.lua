@@ -364,6 +364,9 @@ packer.startup {
     use { 'gaalcaras/ncm-R' }
     use { 'roxma/vim-hug-neovim-rpc' }
 
+    -- csv
+    use { 'chrisbra/csv.vim' }
+
     -- show and trim trailing whitespaces
     use { "jdhao/whitespace.nvim", event = "VimEnter" }
 
