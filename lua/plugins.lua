@@ -427,6 +427,14 @@ packer.startup {
         end,
      }
 
+    use {
+        "brymer-meneses/grammar-guard.nvim",
+        requires = {
+            "neovim/nvim-lspconfig",
+            "williamboman/nvim-lsp-installer"
+        }
+    }
+
     use { "ii14/emmylua-nvim", ft = "lua" }
 
     use { "j-hui/fidget.nvim", after = "nvim-lspconfig", config = [[require('config.fidget-nvim')]] }
