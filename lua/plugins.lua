@@ -366,6 +366,14 @@ packer.startup {
     use { 'gaalcaras/ncm-R' }
     use { 'roxma/vim-hug-neovim-rpc' }
 
+    -- Markdown viz tool
+    use({ 
+        "iamcco/markdown-preview.nvim",
+                run = function() vim.fn["mkdp#util#install"]() end, 
+            })
+
+    use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+
     -- csv
     use { 'chrisbra/csv.vim' }
 
