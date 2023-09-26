@@ -40,26 +40,31 @@ for _, name in ipairs(core_conf_files) do
 end
 
 require'lspconfig'.pyright.setup{}
+--require'lspconfig'.grammarly.setup { filetypes = "latex", init_options = { clientId = "client_BGjmY3spPxC4m2FkjRtXe6" } }
 require("nvim-python-repl").setup()
 require("nvim-lsp-installer").setup {}
+local lspconfig = require('lspconfig')
+lspconfig.tsserver.setup {}
+--lspconfig.ltex.setup {}
+
 --require'lspconfig'.grammarly.setup{filetypes = "latex"}
 --require("grammar-guard").init()
---require("lspconfig").grammar_guard.setup({
---  cmd = { '/home/patrick/.local/share/nvim/lsp_servers/ltex/ltex-ls/bin/ltex-ls' }, -- add this if you install ltex-ls yourself
---	settings = {
---		ltex = {
---			enabled = { "latex", "tex", "bib", "markdown" },
---			language = "en",
---			diagnosticSeverity = "information",
---			setenceCacheSize = 2000,
---			additionalRules = {
---				enablePickyRules = true,
---				motherTongue = "en",
---			},
---			trace = { server = "verbose" },
---			dictionary = {},
---			disabledRules = {},
---			hiddenFalsePositives = {},
---		},
---	},
---})
+require("lspconfig").ltex.setup({
+  cmd = { '/home/patrick/.local/share/ltex-ls/ltex-ls-16.0.0/bin/ltex-ls' }, -- add this if you install ltex-ls yourself
+	settings = {
+		ltex = {
+			enabled = { "latex", "tex", "bib", "markdown" },
+			language = "en",
+			diagnosticSeverity = "information",
+			setenceCacheSize = 2000,
+			additionalRules = {
+				enablePickyRules = true,
+				motherTongue = "en",
+			},
+			trace = { server = "verbose" },
+			dictionary = {},
+			disabledRules = {},
+			hiddenFalsePositives = {},
+		},
+	},
+})
