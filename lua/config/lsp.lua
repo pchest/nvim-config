@@ -131,19 +131,19 @@ end
 --   vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Nvim-config'})
 -- end
 
-if utils.executable("ltex-ls") then
-  lspconfig.ltex.setup {
-    on_attach = custom_attach,
-    cmd = { "ltex-ls" },
-    filetypes = { "text", "plaintex", "tex", "markdown" },
-    settings = {
-      ltex = {
-        language = "en"
-      },
-    },
-    flags = { debounce_text_changes = 300 },
-}
-end
+-- if utils.executable("ltex-ls") then
+--   lspconfig.ltex.setup {
+--     on_attach = custom_attach,
+--     cmd = { "ltex-ls" },
+--     filetypes = { "text", "plaintex", "tex", "markdown" },
+--     settings = {
+--       ltex = {
+--         language = "en"
+--       },
+--     },
+--     flags = { debounce_text_changes = 300 },
+-- }
+-- end
 
 if utils.executable("clangd") then
   lspconfig.clangd.setup {
@@ -218,8 +218,8 @@ fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHin
 
 -- global config for diagnostic
 diagnostic.config {
-  underline = false,
-  virtual_text = false,
+  underline = true,
+  virtual_text = true,
   signs = true,
   severity_sort = true,
 }
