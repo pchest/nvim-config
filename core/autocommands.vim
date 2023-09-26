@@ -121,3 +121,9 @@ augroup END
 
 " Load auto-command defined in Lua
 lua require("custom-autocmd")
+
+augroup r-pipe
+    autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+    autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+    autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+augroup END
