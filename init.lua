@@ -14,7 +14,7 @@ local api = vim.api
 local utils = require("utils")
 
 -- check if we have the latest stable version of nvim
-local expected_ver = "0.8.2"
+local expected_ver = "0.9.1"
 local nvim_ver = utils.get_nvim_version()
 
 if nvim_ver ~= expected_ver then
@@ -54,7 +54,7 @@ require("lspconfig").ltex.setup({
 	settings = {
 		ltex = {
 			enabled = { "latex", "tex", "bib", "markdown" },
-			language = "en",
+			language = "en-US",
 			diagnosticSeverity = "information",
 			setenceCacheSize = 2000,
 			additionalRules = {
@@ -62,7 +62,7 @@ require("lspconfig").ltex.setup({
 				motherTongue = "en",
 			},
 			trace = { server = "verbose" },
-			dictionary = {},
+			--dictionary = { "en-US": '/home/patrick/.config/nvim/spell/en.utf-8.add' },
 			disabledRules = {},
 			hiddenFalsePositives = {},
 		},
