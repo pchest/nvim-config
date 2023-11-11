@@ -68,7 +68,7 @@ fi
 
 # Install some Python packages used by Nvim plugins.
 echo "Installing Python packages"
-declare -a PY_PACKAGES=("pynvim" 'python-lsp-server[all]' "black" "vim-vint" "pyls-isort" "pylsp-mypy")
+declare -a PY_PACKAGES=("pynvim" 'python-lsp-server[all]' "vim-vint" "python-lsp-isort" "pylsp-mypy" "python-lsp-black")
 
 if [[ "$SYSTEM_PYTHON" = true ]]; then
     echo "Using system Python to install $(PY_PACKAGES)"
@@ -124,27 +124,27 @@ fi
 #######################################################################
 #                         lua-language-server                         #
 #######################################################################
-SUMNEKO_LUA_DIR=$HOME/tools/lua-language-server
-SUMNEKO_LUA_SRC_NAME=$HOME/packages/lua-language-server.tar.gz
-SUMNEKO_LUA_LINK="https://github.com/sumneko/lua-language-server/releases/download/3.5.3/lua-language-server-3.5.3-linux-x64.tar.gz"
+LUA_LS_DIR=$HOME/tools/lua-language-server
+LUA_LS_SRC=$HOME/packages/lua-language-server.tar.gz
+LUA_LS_LINK="https://github.com/LuaLS/lua-language-server/releases/download/3.6.11/lua-language-server-3.6.11-linux-x64.tar.gz"
 
-if [[ -z "$(command -v lua-language-server)" ]] && [[ ! -f "$SUMNEKO_LUA_DIR/bin/lua-language-server" ]]; then
+if [[ -z "$(command -v lua-language-server)" ]] && [[ ! -f "$LUA_LS_DIR/bin/lua-language-server" ]]; then
     echo 'Install lua-language-server'
-    if [[ ! -f $SUMNEKO_LUA_SRC_NAME ]]; then
+    if [[ ! -f $LUA_LS_SRC ]]; then
         echo "Downloading lua-language-server and renaming"
-        wget $SUMNEKO_LUA_LINK -O "$SUMNEKO_LUA_SRC_NAME"
+        wget $LUA_LS_LINK -O "$LUA_LS_SRC"
     fi
 
-    if [[ ! -d "$SUMNEKO_LUA_DIR" ]]; then
+    if [[ ! -d "$LUA_LS_DIR" ]]; then
         echo "Creating lua-language-server directory under tools directory"
-        mkdir -p "$SUMNEKO_LUA_DIR"
-        echo "Extracting to directory $SUMNEKO_LUA_DIR"
+        mkdir -p "$LUA_LS_DIR"
+        echo "Extracting to directory $LUA_LS_DIR"
 
-        tar zxvf "$SUMNEKO_LUA_SRC_NAME" -C "$SUMNEKO_LUA_DIR"
+        tar zxvf "$LUA_LS_SRC" -C "$LUA_LS_DIR"
     fi
 
     if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$SUMNEKO_LUA_DIR/bin:\$PATH\"" >> "$HOME/.bash_profile"
+        echo "export PATH=\"$LUA_LS_DIR/bin:\$PATH\"" >> "$HOME/.bash_profile"
     fi
 else
     echo "lua-language-server is already installed. Skip installing it."
@@ -252,13 +252,7 @@ fi
 
 git clone --depth=1 https://github.com/jdhao/nvim-config.git "$NVIM_CONFIG_DIR"
 
-echo "Installing packer.nvim"
-if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
-    git clone --depth=1 https://github.com/wbthomason/packer.nvim \
-        ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
-fi
-
 echo "Installing nvim plugins, please wait"
-"$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
+"$NVIM_DIR/bin/nvim" -c "autocmd User LazyInstall quitall"  -c "lua require('lazy').install()"
 
 echo "Finished installing Nvim and its dependencies!"

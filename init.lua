@@ -9,18 +9,19 @@
 -- Blog: https://jdhao.github.io/
 -- GitHub: https://github.com/jdhao
 -- StackOverflow: https://stackoverflow.com/users/6064933/jdhao
+vim.loader.enable()
 
-local api = vim.api
-local utils = require("utils")
+local version = vim.version
 
 -- check if we have the latest stable version of nvim
 local expected_ver = "0.9.1"
-local nvim_ver = utils.get_nvim_version()
+local ev = version.parse(expected_ver)
+local actual_ver = version()
 
-if nvim_ver ~= expected_ver then
-  local msg = string.format("Unsupported nvim version: expect %s, but got %s instead!", expected_ver, nvim_ver)
-  api.nvim_err_writeln(msg)
-  return
+if version.cmp(ev, actual_ver) ~= 0 then
+  local _ver = string.format("%s.%s.%s", actual_ver.major, actual_ver.minor, actual_ver.patch)
+  local msg = string.format("Expect nvim %s, but got %s instead. Use at your own risk!", expected_ver, _ver)
+  vim.api.nvim_err_writeln(msg)
 end
 
 local core_conf_files = {
@@ -32,17 +33,26 @@ local core_conf_files = {
   "colorschemes.lua", -- colorscheme settings
 }
 
+local viml_conf_dir = vim.fn.stdpath("config") .. "/viml_conf"
 -- source all the core config files
-for _, name in ipairs(core_conf_files) do
-  local path = string.format("%s/core/%s", vim.fn.stdpath("config"), name)
-  local source_cmd = "source " .. path
-  vim.cmd(source_cmd)
+for _, file_name in ipairs(core_conf_files) do
+  if vim.endswith(file_name, 'vim') then
+    local path = string.format("%s/%s", viml_conf_dir, file_name)
+    local source_cmd = "source " .. path
+    vim.cmd(source_cmd)
+  else
+    local module_name, _ = string.gsub(file_name, "%.lua", "")
+    package.loaded[module_name] = nil
+    require(module_name)
+  end
 end
 
 require'lspconfig'.pyright.setup{}
 --require'lspconfig'.grammarly.setup { filetypes = "latex", init_options = { clientId = "client_BGjmY3spPxC4m2FkjRtXe6" } }
-require("nvim-python-repl").setup()
-require("nvim-lsp-installer").setup {}
+
+--require("nvim-python-repl").setup()
+--require("nvim-lsp-installer").setup {}
+--require("lazy-lsp").setup {}
 local lspconfig = require('lspconfig')
 lspconfig.tsserver.setup {}
 --lspconfig.ltex.setup {}
@@ -68,3 +78,7 @@ require("lspconfig").ltex.setup({
 		},
 	},
 })
+
+require("nvim-python-repl").setup({
+    execute_on_send=true,
+    })

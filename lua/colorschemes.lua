@@ -16,7 +16,6 @@ M.colorscheme2dir = {
   nightfox = "nightfox.nvim",
   kanagawa = "kanagawa.nvim",
   catppuccin = "catppuccin",
-  rose_pine = "rose-pine",
   onedarkpro = "onedarkpro.nvim",
   monokai = "monokai.nvim",
   material = "material.nvim",
@@ -94,16 +93,6 @@ M.catppuccin = function()
   vim.cmd([[colorscheme catppuccin]])
 end
 
-M.rose_pine = function()
-  require('rose-pine').setup({
-    --- @usage 'main' | 'moon'
-    dark_variant = 'moon',
-  })
-
-  -- set colorscheme after options
-  vim.cmd('colorscheme rose-pine')
-end
-
 M.onedarkpro = function()
   -- set colorscheme after options
   vim.cmd('colorscheme onedark_vivid')
@@ -124,16 +113,6 @@ M.rand_colorscheme = function()
 
   if not vim.tbl_contains(vim.tbl_keys(M), colorscheme) then
     local msg = "Invalid colorscheme: " .. colorscheme
-    vim.notify(msg, vim.log.levels.ERROR, { title = "nvim-config" })
-
-    return
-  end
-
-  -- Load the colorscheme, because all the colorschemes are declared as opt plugins, so the colorscheme isn't loaded yet.
-  local status = utils.add_pack(M.colorscheme2dir[colorscheme])
-
-  if not status then
-    local msg = string.format("Colorscheme %s is not installed. Run PackerSync to install.", colorscheme)
     vim.notify(msg, vim.log.levels.ERROR, { title = "nvim-config" })
 
     return

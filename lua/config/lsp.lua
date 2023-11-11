@@ -6,6 +6,18 @@ local diagnostic = vim.diagnostic
 
 local utils = require("utils")
 
+-- set quickfix list from diagnostics in a certain buffer, not the whole workspace
+local set_qflist = function(buf_num, severity)
+  local diagnostics = nil
+  diagnostics = diagnostic.get(buf_num, { severity = severity })
+
+  local qf_items = diagnostic.toqflist(diagnostics)
+  vim.fn.setqflist({}, ' ', { title = 'Diagnostics', items = qf_items })
+
+  -- open quickfix by default
+  vim.cmd[[copen]]
+end
+
 local custom_attach = function(client, bufnr)
   -- Mappings.
   local map = function(mode, l, r, opts)
@@ -23,7 +35,10 @@ local custom_attach = function(client, bufnr)
   map("n", "gr", vim.lsp.buf.references, { desc = "show references" })
   map("n", "[d", diagnostic.goto_prev, { desc = "previous diagnostic" })
   map("n", "]d", diagnostic.goto_next, { desc = "next diagnostic" })
-  map("n", "<space>q", diagnostic.setqflist, { desc = "put diagnostic to qf" })
+  -- this puts diagnostics from opened files to quickfix
+  map("n", "<space>qw", diagnostic.setqflist, { desc = "put window diagnostics to qf" })
+  -- this puts diagnostics from current buffer to quickfix
+  map("n", "<space>qb", function() set_qflist(bufnr) end, { desc = "put buffer diagnostics to qf" })
   map("n", "<space>ca", vim.lsp.buf.code_action, { desc = "LSP code action" })
   map("n", "<space>wa", vim.lsp.buf.add_workspace_folder, { desc = "add workspace folder" })
   map("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
@@ -99,17 +114,40 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local lspconfig = require("lspconfig")
 
 if utils.executable("pylsp") then
+  local venv_path = os.getenv('VIRTUAL_ENV')
+  local py_path = nil
+  -- decide which python executable to use for mypy
+  if venv_path ~= nil then
+    py_path = venv_path .. "/bin/python3"
+  else
+    py_path = vim.g.python3_host_prog
+  end
+
   lspconfig.pylsp.setup {
     on_attach = custom_attach,
     settings = {
       pylsp = {
         plugins = {
+          -- formatter options
+          black = { enabled = true },
+          autopep8 = { enabled = false },
+          yapf = { enabled = false },
+          -- linter options
           pylint = { enabled = true, executable = "pylint" },
+          ruff = { enabled = false },
           pyflakes = { enabled = false },
           pycodestyle = { enabled = false },
+          -- type checker
+          pylsp_mypy = {
+            enabled = true,
+            overrides = { "--python-executable", py_path, true },
+            report_progress = true,
+            live_mode = false
+          },
+          -- auto-completion options
           jedi_completion = { fuzzy = true },
-          pyls_isort = { enabled = true },
-          pylsp_mypy = { enabled = true },
+          -- import sorting
+          isort = { enabled = true },
         },
       },
     },
@@ -154,8 +192,6 @@ if utils.executable("clangd") then
       debounce_text_changes = 500,
     },
   }
-else
-  vim.notify("clangd not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
 
 -- set up vim-language-server
@@ -180,8 +216,8 @@ if utils.executable("bash-language-server") then
 end
 
 if utils.executable("lua-language-server") then
-  -- settings for lua-language-server can be found on https://github.com/sumneko/lua-language-server/wiki/Settings .
-  lspconfig.sumneko_lua.setup {
+  -- settings for lua-language-server can be found on https://github.com/LuaLS/lua-language-server/wiki/Settings .
+  lspconfig.lua_ls.setup {
     on_attach = custom_attach,
     settings = {
       Lua = {
@@ -195,10 +231,10 @@ if utils.executable("lua-language-server") then
         },
         workspace = {
           -- Make the server aware of Neovim runtime files,
-          -- see also https://github.com/sumneko/lua-language-server/wiki/Libraries#link-to-workspace .
-          -- Lua-dev.nvim also has similar settings for sumneko lua, https://github.com/folke/lua-dev.nvim/blob/main/lua/lua-dev/sumneko.lua .
+          -- see also https://github.com/LuaLS/lua-language-server/wiki/Libraries#link-to-workspace .
+          -- Lua-dev.nvim also has similar settings for lua ls, https://github.com/folke/neodev.nvim/blob/main/lua/neodev/luals.lua .
           library = {
-            fn.stdpath("data") .. "/site/pack/packer/opt/emmylua-nvim",
+            fn.stdpath("data") .. "/lazy/emmylua-nvim",
             fn.stdpath("config"),
           },
           maxPreload = 2000,
@@ -211,10 +247,10 @@ if utils.executable("lua-language-server") then
 end
 
 -- Change diagnostic signs.
-fn.sign_define("DiagnosticSignError", { text = "✗", texthl = "DiagnosticSignError" })
-fn.sign_define("DiagnosticSignWarn", { text = "!", texthl = "DiagnosticSignWarn" })
-fn.sign_define("DiagnosticSignInformation", { text = "", texthl = "DiagnosticSignInfo" })
-fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
+fn.sign_define("DiagnosticSignError", { text = '🆇', texthl = "DiagnosticSignError" })
+fn.sign_define("DiagnosticSignWarn", { text = '⚠️', texthl = "DiagnosticSignWarn" })
+fn.sign_define("DiagnosticSignInfo", { text = 'ℹ️', texthl = "DiagnosticSignInfo" })
+fn.sign_define("DiagnosticSignHint", { text = '', texthl = "DiagnosticSignHint" })
 
 -- global config for diagnostic
 diagnostic.config {

@@ -93,8 +93,29 @@ local diff = function()
   local add_num = git_status.added
 
   local info = { added = add_num, modified = modify_num, removed = remove_num }
-  -- vim.pretty_print(info)
+  -- vim.print(info)
   return info
+end
+
+local virtual_env = function()
+  -- only show virtual env for Python
+  if vim.bo.filetype ~= 'python' then
+    return ""
+  end
+
+  local conda_env = os.getenv('CONDA_DEFAULT_ENV')
+  local venv_path = os.getenv('VIRTUAL_ENV')
+
+  if venv_path == nil then
+    if conda_env == nil then
+      return ""
+    else
+      return string.format("  %s (conda)", conda_env)
+    end
+  else
+    local venv_name = vim.fn.fnamemodify(venv_path, ':t')
+    return string.format("  %s (venv)", venv_name)
+  end
 end
 
 require("lualine").setup {
@@ -116,6 +137,10 @@ require("lualine").setup {
         "diff",
         source = diff,
       },
+      {
+        virtual_env,
+        color = { fg = 'black', bg = "#F1CA81" }
+      }
     },
     lualine_c = {
       "filename",
@@ -126,6 +151,11 @@ require("lualine").setup {
       {
         spell,
         color = { fg = "black", bg = "#a7c080" },
+      },
+      {
+        "diagnostics",
+        sources = { "nvim_diagnostic" },
+        symbols = {error = '🆇 ', warn = '⚠️ ', info = 'ℹ️ ', hint = ' '},
       },
     },
     lualine_x = {
@@ -140,13 +170,11 @@ require("lualine").setup {
       },
       "filetype",
     },
-    lualine_y = { "progress" },
-    lualine_z = {
+    lualine_y = {
       "location",
-      {
-        "diagnostics",
-        sources = { "nvim_diagnostic" },
-      },
+      "progress",
+    },
+    lualine_z = {
       {
         trailing_space,
         color = "WarningMsg",

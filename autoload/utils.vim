@@ -128,11 +128,22 @@ endfunction
 
 " Output current time or unix timestamp in human-readable format.
 function! utils#iso_time(timestamp) abort
-  if a:timestamp
-    return strftime('%Y-%m-%d %H:%M:%S%z', a:timestamp)
+  " Get current datetime
+  if !a:timestamp
+    return strftime('%Y-%m-%d %H:%M:%S%z')
   endif
 
-  return strftime('%Y-%m-%d %H:%M:%S%z')
+  " this timestamp in expressed in milliseconds
+  if len(a:timestamp) == 13
+    let l:timestamp = a:timestamp[:-4]
+  " this timestamp in expressed in microseconds
+  elseif len(a:timestamp) == 16
+    let l:timestamp = a:timestamp[:-7]
+  else
+    let l:timestamp = a:timestamp
+  endif
+  return strftime('%Y-%m-%d %H:%M:%S%z', l:timestamp)
+
 endfunction
 
 " Check if we are inside a Git repo.
@@ -141,9 +152,7 @@ function! utils#Inside_git_repo() abort
   if match(res, 'true') == -1
     return v:false
   else
-    " Manually trigger a special user autocmd InGitRepo (to use it for
-    " lazyloading of fugitive by packer.nvim).
-    " See also https://github.com/wbthomason/packer.nvim/discussions/534.
+    " Manually trigger a special user autocmd InGitRepo (used lazyloading.
     doautocmd User InGitRepo
     return v:true
   endif

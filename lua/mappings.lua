@@ -201,20 +201,6 @@ end
 -- insert semicolon in the end
 keymap.set("i", "<A-;>", "<Esc>miA;<Esc>`ii")
 
--- Keep cursor position after yanking
-keymap.set("n", "y", "myy")
-
-api.nvim_create_autocmd("TextYankPost", {
-  pattern = "*",
-  group = api.nvim_create_augroup("restore_after_yank", { clear = true }),
-  callback = function()
-    vim.cmd([[
-      silent! normal! `y
-      silent! delmarks y
-    ]])
-  end,
-})
-
 -- Go to the beginning and end of current line in insert mode quickly
 keymap.set("i", "<C-A>", "<HOME>")
 keymap.set("i", "<C-E>", "<END>")
@@ -243,3 +229,13 @@ keymap.set("n", "<leader>cb", function()
     cnt = cnt + 1
   end))
 end)
+
+vim.keymap.set("n", "<leader>pa", function() require('nvim-python-repl').send_statement_definition() end, { desc = "Send semantic unit to REPL"})
+
+vim.keymap.set("v", "<leader>ps", function() require('nvim-python-repl').send_visual_to_repl() end, { desc = "Send visual selection to REPL"})
+
+vim.keymap.set("n", "<leader>pd", function() require('nvim-python-repl').send_buffer_to_repl() end, { desc = "Send entire buffer to REPL"})
+
+vim.keymap.set("n", "<leader>pf", function() require('nvim-python-repl').toggle_execute() end, { desc = "Automatically execute command in REPL after sent"})
+
+vim.keymap.set("n", "<leader>pe", function() require('nvim-python-repl').toggle_vertical() end, { desc = "Create REPL in vertical or horizontal split"})
