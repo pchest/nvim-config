@@ -14,7 +14,7 @@ vim.loader.enable()
 local version = vim.version
 
 -- check if we have the latest stable version of nvim
-local expected_ver = "0.9.1"
+local expected_ver = "0.9.5"
 local ev = version.parse(expected_ver)
 local actual_ver = version()
 
@@ -47,13 +47,14 @@ for _, file_name in ipairs(core_conf_files) do
   end
 end
 
-require'lspconfig'.pyright.setup{}
 --require'lspconfig'.grammarly.setup { filetypes = "latex", init_options = { clientId = "client_BGjmY3spPxC4m2FkjRtXe6" } }
 
 --require("nvim-python-repl").setup()
 --require("nvim-lsp-installer").setup {}
 --require("lazy-lsp").setup {}
 local lspconfig = require('lspconfig')
+
+lspconfig.pyright.setup{}
 lspconfig.tsserver.setup {}
 --lspconfig.ltex.setup {}
 
