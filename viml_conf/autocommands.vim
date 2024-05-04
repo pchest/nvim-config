@@ -123,7 +123,8 @@ augroup END
 lua require("custom-autocmd")
 
 augroup r-pipe
-    autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
-    autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
-    autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+    autocmd FileType r inoremap <buffer> <C-\> <Esc>:normal! a \|><CR>a
+    autocmd FileType rnoweb inoremap <buffer> <C-\> <Esc>:normal! a \|><CR>a
+    autocmd FileType rmd inoremap <buffer> <C-\> <Esc>:normal! a \|><CR>a
 augroup END
+
