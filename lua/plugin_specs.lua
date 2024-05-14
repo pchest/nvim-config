@@ -59,7 +59,7 @@ local plugin_specs = {
   { 'ncm2/ncm2' },
   { 'roxma/nvim-yarp' },
   { 'jalvesaq/Nvim-R' },
-  { 'jalvesaq/nvimcom' },
+  -- { 'jalvesaq/nvimcom' },
   { 'gaalcaras/ncm-R' },
   { 'roxma/vim-hug-neovim-rpc' },
 
@@ -347,12 +347,6 @@ local plugin_specs = {
   -- Markdown previewing (only for Mac and Windows)
   {
     "iamcco/markdown-preview.nvim",
-    enabled = function()
-      if vim.g.is_win or vim.g.is_mac then
-        return true
-      end
-      return false
-    end,
     build = "cd app && npm install",
     ft = { "markdown" },
   },
