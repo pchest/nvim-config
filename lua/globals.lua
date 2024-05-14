@@ -29,7 +29,7 @@ if utils.executable('python3') then
   if vim.g.is_win then
     vim.g.python3_host_prog = fn.substitute(fn.exepath("python3"), ".exe$", '', 'g')
   else
-    vim.g.python3_host_prog = "/home/patrick/anaconda3/bin/python3"
+    vim.g.python3_host_prog = "/usr/bin/python3"
   end
 else
   api.nvim_err_writeln("Python3 executable not found! You must install Python3 and set its PATH correctly!")
