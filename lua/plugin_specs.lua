@@ -326,6 +326,10 @@ local plugin_specs = {
   {
     "sindrets/diffview.nvim"
   },
+  {
+    "savq/paq-nvim",
+    "frabjous/knap"
+  },
 
   {
     "kevinhwang91/nvim-bqf",
