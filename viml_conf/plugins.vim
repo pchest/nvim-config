@@ -271,6 +271,7 @@ if executable('latex')
       call jobstart(l:cmd + [line('.'), l:out, l:src_file_path])
     endfunction
   endif
+    let g:vimtex_view_general_viewer = 'zathura'
 endif
 
 """"""""""""""""""""""""""""vim-matchup settings"""""""""""""""""""""""""""""
