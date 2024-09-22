@@ -177,12 +177,22 @@ end
 if utils.executable("ltex-ls") then
   lspconfig.ltex.setup {
     on_attach = custom_attach,
-    cmd = { "ltex-ls" },
+    cmd = { '/home/patrick/.local/share/ltex-ls/ltex-ls-16.0.0/bin/ltex-ls' }, -- add this if you install ltex-ls yourself
+    --cmd = { "ltex-ls" },
     filetypes = { "text", "plaintex", "tex", "markdown" },
     settings = {
       ltex = {
-        language = "en"
+        language = "en-US",
+			  diagnosticSeverity = "information",
+			  setenceCacheSize = 2000,
+  			additionalRules = {
+  				enablePickyRules = true,
+  				motherTongue = "en",
+  			},
+  			trace = { server = "verbose" },
+        --disabledRules = {"en-US" : ["EN_UNPAIRED_BRACKETS"]},
       },
+
     },
     flags = { debounce_text_changes = 300 },
 }
