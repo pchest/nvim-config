@@ -65,6 +65,33 @@ local plugin_specs = {
   -- Python-related text object
   { "jeetsukumaran/vim-pythonsense", ft = { "python" } },
 
+  -- Interactive python ide
+  {
+    "benlubas/molten-nvim",
+    version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+    dependencies = { "3rd/image.nvim" },
+    build = ":UpdateRemotePlugins",
+    init = function()
+        vim.g.molten_image_provider = "image.nvim"
+        vim.g.molten_output_win_max_height = 20
+    end,
+  },
+
+  -- Required to display images in molten-nvim
+  {
+    -- see the image.nvim readme for more information about configuring this plugin
+    "3rd/image.nvim",
+    opts = {
+        backend = "kitty", -- whatever backend you would like to use
+        max_width = 100,
+        max_height = 12,
+        max_height_window_percentage = math.huge,
+        max_width_window_percentage = math.huge,
+        window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
+        window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+    },
+  },
+
   { "machakann/vim-swap", event = "VeryLazy" },
 
   -- IDE for Lisp
@@ -473,6 +500,28 @@ local plugin_specs = {
       -- local prologue = "echo"
       local cmd_str = string.format(":call firenvim#install(0, '%s')", prologue)
       vim.cmd(cmd_str)
+    end,
+  },
+    {
+    "R-nvim/R.nvim",
+    lazy = false
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    run = ":TSUpdate",
+    config = function ()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml" },
+        highlight = { enable = true },
+      })
+    end
+  },
+  "R-nvim/cmp-r",
+  {
+    "hrsh7th/nvim-cmp",
+    config = function()
+      require("cmp").setup({ sources = {{ name = "cmp_r" }}})
+      require("cmp_r").setup({ })
     end,
   },
   -- Debugger plugin
