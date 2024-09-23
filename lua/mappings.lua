@@ -179,6 +179,18 @@ keymap.set("n", "<Right>", "<C-W>l")
 keymap.set("n", "<Up>", "<C-W>k")
 keymap.set("n", "<Down>", "<C-W>j")
 
+--Molten
+
+keymap.set("n", "<leader>tm", ":MoltenInit<CR>", { silent = true, desc = "Initialize the plugin" })
+keymap.set("n", "<leader>te", ":MoltenEvaluateOperator<CR>", { silent = true, desc = "run operator selection" })
+keymap.set("n", "<leader>tl", ":MoltenEvaluateLine<CR>", { silent = true, desc = "evaluate line" })
+keymap.set("n", "<leader>tr", ":MoltenReevaluateCell<CR>", { silent = true, desc = "re-evaluate cell" })
+keymap.set("v", "<leader>t", ":<C-u>MoltenEvaluateVisual<CR>gv", { silent = true, desc = "evaluate visual selection" })
+
+keymap.set("n", "<leader>td", ":MoltenDelete<CR>", { silent = true, desc = "molten delete cell" })
+keymap.set("n", "<leader>oh", ":MoltenHideOutput<CR>", { silent = true, desc = "hide output" })
+keymap.set("n", "<leader>os", ":noautocmd MoltenEnterOutput<CR>", { silent = true, desc = "show/enter output" })
+
 -- Text objects for URL
 keymap.set({ "x", "o" }, "iu", "<cmd>call text_obj#URL()<cr>", { desc = "URL text object" })
 
