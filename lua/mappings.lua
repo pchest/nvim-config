@@ -191,6 +191,9 @@ keymap.set("n", "<leader>td", ":MoltenDelete<CR>", { silent = true, desc = "molt
 keymap.set("n", "<leader>oh", ":MoltenHideOutput<CR>", { silent = true, desc = "hide output" })
 keymap.set("n", "<leader>os", ":noautocmd MoltenEnterOutput<CR>", { silent = true, desc = "show/enter output" })
 
+-- Json files
+keymap.set("n", "<leader>js", ":%!jq .<CR>", { silent = true, desc = "prettify json output" })
+
 -- Text objects for URL
 keymap.set({ "x", "o" }, "iu", "<cmd>call text_obj#URL()<cr>", { desc = "URL text object" })
 
