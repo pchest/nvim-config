@@ -49,17 +49,20 @@ local plugin_specs = {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    enabled = function()
-      if vim.g.is_mac then
-        return true
-      end
-      return false
-    end,
+--    enabled = function()
+--      if vim.g.is_mac then
+--        return true
+--      end
+--      return false
+--    end,
     event = "VeryLazy",
     build = ":TSUpdate",
-    config = function()
-      require("config.treesitter")
-    end,
+    config = function ()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml", "python", "vim" },
+        highlight = { enable = true },
+      })
+    end
   },
 
   -- Python-related text object
@@ -506,16 +509,16 @@ local plugin_specs = {
     "R-nvim/R.nvim",
     lazy = false
   },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    run = ":TSUpdate",
-    config = function ()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml" },
-        highlight = { enable = true },
-      })
-    end
-  },
+--  {
+--    "nvim-treesitter/nvim-treesitter",
+--    run = ":TSUpdate",
+--    config = function ()
+--      require("nvim-treesitter.configs").setup({
+--        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml", "rnoweb" },
+--        highlight = { enable = true },
+--      })
+--    end
+--  },
   "R-nvim/cmp-r",
   {
     "hrsh7th/nvim-cmp",
