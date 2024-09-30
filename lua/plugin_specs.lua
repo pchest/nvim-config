@@ -59,7 +59,7 @@ local plugin_specs = {
     build = ":TSUpdate",
     config = function ()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml", "python", "vim" },
+        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml", "python", "vim", "vimdoc", "lua", "luadoc" },
         highlight = { enable = true },
       })
     end
@@ -91,6 +91,7 @@ local plugin_specs = {
         max_height_window_percentage = math.huge,
         max_width_window_percentage = math.huge,
         window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
+        tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
         window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
     },
   },
@@ -414,12 +415,6 @@ local plugin_specs = {
   -- Markdown previewing (only for Mac and Windows)
   {
     "iamcco/markdown-preview.nvim",
-    enabled = function()
-      if vim.g.is_win or vim.g.is_mac then
-        return true
-      end
-      return false
-    end,
     build = "cd app && npm install",
     ft = { "markdown" },
   },
@@ -509,6 +504,13 @@ local plugin_specs = {
     "R-nvim/R.nvim",
     lazy = false
   },
+  {
+    "quarto-dev/quarto-nvim",
+    dependencies = {
+      "jmbuhr/otter.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
 --  {
 --    "nvim-treesitter/nvim-treesitter",
 --    run = ":TSUpdate",
@@ -519,7 +521,7 @@ local plugin_specs = {
 --      })
 --    end
 --  },
-  "R-nvim/cmp-r",
+  { "R-nvim/cmp-r" },
   {
     "hrsh7th/nvim-cmp",
     config = function()
