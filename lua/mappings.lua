@@ -195,7 +195,8 @@ keymap.set("n", "<leader>os", ":noautocmd MoltenEnterOutput<CR>", { silent = tru
 keymap.set("n", "<leader>js", ":%!jq .<CR>", { silent = true, desc = "prettify json output" })
 
 -- Nvim-R
-keymap.set("i", "<leader>r;", "|><CR>", { silent = true, noremap = true, desc = "insert R pipe" })
+keymap.set("i", "<leader>r;", " |><CR>", { silent = true, noremap = true, desc = "insert R pipe" })
+keymap.set("n", "<leader>r;", "a |><CR><Esc>", { silent = true, noremap = true, desc = "insert R pipe" })
 
 -- Text objects for URL
 keymap.set({ "x", "o" }, "iu", "<cmd>call text_obj#URL()<cr>", { desc = "URL text object" })
