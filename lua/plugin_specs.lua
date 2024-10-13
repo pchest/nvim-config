@@ -47,6 +47,10 @@ local plugin_specs = {
     end,
   },
 
+  { 'davidhalter/jedi-vim' },
+
+  { 'mbbill/fencview' },
+
   {
     "nvim-treesitter/nvim-treesitter",
 --    enabled = function()
