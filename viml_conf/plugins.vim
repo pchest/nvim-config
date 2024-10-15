@@ -18,18 +18,23 @@ call utils#Cabbrev('ps', 'Lazy sync')
 
 """""""""""""""""""""""""UltiSnips settings"""""""""""""""""""
 " Trigger configuration. Do not use <tab> if you use YouCompleteMe
-let g:UltiSnipsExpandTrigger='<c-j>'
+"let g:UltiSnipsExpandTrigger='<c-j>'
+let g:UltiSnipsExpandTrigger='<tab>'
 
 " Do not look for SnipMate snippets
 let g:UltiSnipsEnableSnipMate = 0
 
 " Shortcut to jump forward and backward in tabstop positions
-let g:UltiSnipsJumpForwardTrigger='<c-j>'
-let g:UltiSnipsJumpBackwardTrigger='<c-k>'
+"let g:UltiSnipsJumpForwardTrigger='<c-j>'
+let g:UltiSnipsJumpForwardTrigger='<tab>'
+"let g:UltiSnipsJumpBackwardTrigger='<c-k>'
+let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
 
 " Configuration for custom snippets directory, see
 " https://jdhao.github.io/2019/04/17/neovim_snippet_s1/ for details.
 let g:UltiSnipsSnippetDirectories=['UltiSnips', 'my_snippets']
+
+set spell
 
 """""""""""""""""""""""""" vlime settings """"""""""""""""""""""""""""""""
 command! -nargs=0 StartVlime call jobstart(printf("sbcl --load %s/vlime/lisp/start-vlime.lisp", g:package_home))
@@ -49,11 +54,6 @@ let g:Lf_WildIgnore = {
   \ '*.wmv', '*.mkv', '*.mp4', '*.rmvb', '*.ttf', '*.ttc', '*.otf',
   \ '*.mp3', '*.aac']
   \}
-
-" Do not show fancy icons for Linux server.
-if g:is_linux
-  let g:Lf_ShowDevIcons = 0
-endif
 
 " Only fuzzy-search files names
 let g:Lf_DefaultMode = 'FullPath'
