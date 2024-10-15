@@ -39,11 +39,26 @@ snippet ig "The LaTeX \includegraphics{} command"
 \end{figure}
 endsnippet
 
-
 snippet bl "The LaTeX \block{} command"
 \begin{block}{$1}
 	$0
 \end{block}
 endsnippet
 
+snippet beg "begin" bA
+\begin{$1}
+	$0
+\end{$1}
+endsnippet
 
+snippet fn "Insert footnote"
+\footnote{$1}$0
+endsnippet
+
+snippet ac "Autocite"
+\autocite{$1}$0
+endsnippet
+
+snippet tc "Textcite"
+\textcite{$1}$0
+endsnippet
