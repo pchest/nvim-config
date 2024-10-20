@@ -509,6 +509,13 @@ local plugin_specs = {
     lazy = false
   },
   {
+    'jmbuhr/otter.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+    opts = {},
+  },
+  {
     "quarto-dev/quarto-nvim",
     dependencies = {
       "jmbuhr/otter.nvim",
