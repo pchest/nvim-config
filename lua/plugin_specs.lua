@@ -47,6 +47,8 @@ local plugin_specs = {
     end,
   },
 
+  { 'neoclide/coc.nvim' },
+
   { 'davidhalter/jedi-vim' },
 
   { 'mbbill/fencview' },

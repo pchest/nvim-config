@@ -274,6 +274,7 @@ if executable('latex')
     endfunction
   endif
     let g:vimtex_view_general_viewer = 'zathura'
+    let g:coc_filetype_map = {'tex': 'latex'}
 endif
 
 """"""""""""""""""""""""""""vim-matchup settings"""""""""""""""""""""""""""""
