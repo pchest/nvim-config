@@ -1,0 +1,16 @@
+snippet head "R source file header" b
+#####################################
+# Description: $1
+# Author: Patrick Chester (patrickjchester@gmail.com)
+# Created: `!v strftime("%Y-%m-%d %H:%M:%S%z")`
+#####################################
+$0
+endsnippet
+
+snippet lib "Library" bA
+library($0)
+endsnippet
+
+snippet swd "Set working directory" bA
+setwd($0)
+endsnippet
