@@ -157,7 +157,17 @@ local plugin_specs = {
     cmd = "Telescope",
     dependencies = {
       "nvim-telescope/telescope-symbols.nvim",
+      "Myzel394/jsonfly.nvim"
     },
+    keys = {
+      {
+        "<leader>jj",
+        "<cmd>Telescope jsonfly<cr>",
+        desc = "Open json(fly)",
+        ft = { "json", "xml", "yaml" },
+        mode = "n"
+      }
+    }
   },
   {
     "ibhagwan/fzf-lua",
