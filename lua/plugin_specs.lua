@@ -157,7 +157,17 @@ local plugin_specs = {
     cmd = "Telescope",
     dependencies = {
       "nvim-telescope/telescope-symbols.nvim",
+      "Myzel394/jsonfly.nvim"
     },
+    keys = {
+      {
+        "<leader>jj",
+        "<cmd>Telescope jsonfly<cr>",
+        desc = "Open json(fly)",
+        ft = { "json", "xml", "yaml" },
+        mode = "n"
+      }
+    }
   },
   {
     "ibhagwan/fzf-lua",
@@ -610,19 +620,19 @@ local plugin_specs = {
     ft = "lua", -- only load on lua files
     opts = {},
   },
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "canary",
-    dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-    },
-    -- See Commands section for default commands if you want to lazy load on them
-  },
+  --{
+  --  "CopilotC-Nvim/CopilotChat.nvim",
+  --  branch = "canary",
+  --  dependencies = {
+  --    { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+  --    { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+  --  },
+  --  opts = {
+  --    debug = true, -- Enable debugging
+  --    -- See Configuration section for rest
+  --  },
+  --  -- See Commands section for default commands if you want to lazy load on them
+  --},
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
