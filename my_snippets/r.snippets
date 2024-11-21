@@ -7,10 +7,14 @@ snippet head "R source file header" b
 $0
 endsnippet
 
-snippet lib "Library" bA
+snippet li "Library" b
 library($0)
 endsnippet
 
-snippet swd "Set working directory" bA
+snippet swd "Set working directory" b
 setwd($0)
+endsnippet
+
+snippet rm "Clears environment" b
+rm(list = ls())
 endsnippet
