@@ -90,16 +90,16 @@ local plugin_specs = {
   {
     -- see the image.nvim readme for more information about configuring this plugin
     "3rd/image.nvim",
-    opts = {
-        backend = "kitty", -- whatever backend you would like to use
-        max_width = 100,
-        max_height = 12,
-        max_height_window_percentage = math.huge,
-        max_width_window_percentage = math.huge,
-        window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
-        tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
-        window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
-    },
+    --opts = {
+    --    backend = "kitty", -- whatever backend you would like to use
+    --    max_width = 100,
+    --    max_height = 12,
+    --    max_height_window_percentage = math.huge,
+    --    max_width_window_percentage = math.huge,
+    --    window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
+    --    tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+    --    window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+    --},
   },
 
   { "machakann/vim-swap", event = "VeryLazy" },
@@ -178,6 +178,7 @@ local plugin_specs = {
       require("fzf-lua").setup {}
     end,
   },
+  { "benlubas/wrapping-paper.nvim" },
   {
     "MeanderingProgrammer/markdown.nvim",
     main = "render-markdown",
@@ -429,11 +430,11 @@ local plugin_specs = {
   { "godlygeek/tabular", cmd = { "Tabularize" } },
 
   -- Markdown previewing (only for Mac and Windows)
-  {
-    "iamcco/markdown-preview.nvim",
-    build = "cd app && npm install",
-    ft = { "markdown" },
-  },
+  --{
+  --  "iamcco/markdown-preview.nvim",
+  --  build = "cd app && npm install",
+  --  ft = { "markdown" },
+  --},
 
   {
     "rhysd/vim-grammarous",
@@ -620,6 +621,18 @@ local plugin_specs = {
     ft = "lua", -- only load on lua files
     opts = {},
   },
+  {
+  "olimorris/codecompanion.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
+    "hrsh7th/nvim-cmp", -- Optional: For using slash commands and variables in the chat buffer
+    "nvim-telescope/telescope.nvim", -- Optional: For using slash commands
+    { "MeanderingProgrammer/render-markdown.nvim", ft = { "markdown", "codecompanion" } }, -- Optional: For prettier markdown rendering
+    { "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves `vim.ui.select`
+  },
+  config = true
+},
   --{
   --  "CopilotC-Nvim/CopilotChat.nvim",
   --  branch = "canary",
@@ -633,13 +646,13 @@ local plugin_specs = {
   --  },
   --  -- See Commands section for default commands if you want to lazy load on them
   --},
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    config = function()
-      require("copilot").setup {}
-    end,
-  },
+  --{
+  --  "zbirenbaum/copilot.lua",
+  --  cmd = "Copilot",
+  --  config = function()
+  --    require("copilot").setup {}
+  --  end,
+  --},
   {
     "smjonas/live-command.nvim",
     -- live-command supports semantic versioning via Git tags
