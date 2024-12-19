@@ -102,8 +102,14 @@ local plugin_specs = {
     --},
   },
 
-  { "machakann/vim-swap", event = "VeryLazy" },
+  {
+    'hat0uma/csvview.nvim',
+    config = function()
+      require('csvview').setup()
+    end
+  },
 
+  { "machakann/vim-swap", event = "VeryLazy" },
   -- IDE for Lisp
   -- 'kovisoft/slimv'
   {
@@ -653,6 +659,9 @@ local plugin_specs = {
   --    require("copilot").setup {}
   --  end,
   --},
+  {
+    'github/copilot.vim'
+  },
   {
     "smjonas/live-command.nvim",
     -- live-command supports semantic versioning via Git tags
