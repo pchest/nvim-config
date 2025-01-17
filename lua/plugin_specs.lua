@@ -659,9 +659,9 @@ local plugin_specs = {
   --    require("copilot").setup {}
   --  end,
   --},
-  {
-    'github/copilot.vim'
-  },
+  --{
+  --  'github/copilot.vim'
+  --},
   {
     "smjonas/live-command.nvim",
     -- live-command supports semantic versioning via Git tags
