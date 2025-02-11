@@ -182,15 +182,15 @@ keymap.set("n", "<Down>", "<C-W>j")
 --Molten
 
 keymap.set("n", "<leader>tm", ":MoltenInit<CR>", { silent = true, desc = "Initialize the plugin" })
-keymap.set("n", "<leader>te", ":MoltenEvaluateOperator<CR>", { silent = true, desc = "run operator selection" })
-keymap.set("n", "<leader>tl", ":MoltenEvaluateLine<CR>", { silent = true, desc = "evaluate line" })
-keymap.set("n", "<leader>tr", ":MoltenReevaluateCell<CR>", { silent = true, desc = "re-evaluate cell" })
-keymap.set("n", "<leader>tn", ":MoltenNext<CR>", { silent = true, desc = "re-evaluate cell" })
-keymap.set("n", "<leader>tp", ":MoltenPrev<CR>", { silent = true, desc = "re-evaluate cell" })
-keymap.set("v", "<leader>t", ":<C-u>MoltenEvaluateVisual<CR>gv", { silent = true, desc = "evaluate visual selection" })
+keymap.set("n", "<leader>te", ":MoltenEvaluateOperator<CR>", { silent = true, desc = "Run operator selection" })
+keymap.set("n", "<leader>tl", ":MoltenEvaluateLine<CR>", { silent = true, desc = "Evaluate line" })
+keymap.set("n", "<leader>tr", ":MoltenReevaluateCell<CR>", { silent = true, desc = "Re-evaluate cell" })
+keymap.set("n", "<leader>tn", ":MoltenNext<CR>", { silent = true, desc = "Skip to next cell" })
+keymap.set("n", "<leader>tp", ":MoltenPrev<CR>", { silent = true, desc = "Skip to previous cell" })
+keymap.set("v", "<leader>t", ":<C-u>MoltenEvaluateVisual<CR>gv", { silent = true, desc = "Evaluate visual selection" })
 
-keymap.set("n", "<leader>td", ":MoltenDelete<CR>", { silent = true, desc = "molten delete cell" })
-keymap.set("n", "<leader>th", ":MoltenHideOutput<CR>", { silent = true, desc = "hide output" })
+keymap.set("n", "<leader>td", ":MoltenDelete<CR>", { silent = true, desc = "Molten delete cell" })
+keymap.set("n", "<leader>th", ":MoltenHideOutput<CR>", { silent = true, desc = "Hide output" })
 keymap.set("n", "<leader>ts", ":noautocmd MoltenEnterOutput<CR>", { silent = true, desc = "show/enter output" })
 
 -- Copilot
