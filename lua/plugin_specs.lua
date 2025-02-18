@@ -49,7 +49,7 @@ local plugin_specs = {
 
   { 'neoclide/coc.nvim' },
 
-  { 'davidhalter/jedi-vim' },
+  --{ 'davidhalter/jedi-vim' },
 
   { 'mbbill/fencview' },
 
