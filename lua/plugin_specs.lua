@@ -47,7 +47,7 @@ local plugin_specs = {
     end,
   },
 
-  { 'neoclide/coc.nvim' },
+  --{ 'neoclide/coc.nvim' },
 
   --{ 'davidhalter/jedi-vim' },
 
@@ -664,6 +664,9 @@ local plugin_specs = {
   --{
   --  'github/copilot.vim'
   --},
+  {
+  "LunarVim/bigfile.nvim",
+  },
   {
   "3rd/diagram.nvim",
     dependencies = {
