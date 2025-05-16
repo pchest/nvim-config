@@ -77,6 +77,7 @@ local plugin_specs = {
     config = function ()
       require("nvim-treesitter.configs").setup({
         ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml", "python", "vim", "vimdoc", "lua", "luadoc" },
+        --disable = {"latex", "tex"},
         highlight = { enable = true },
       })
     end
@@ -479,13 +480,14 @@ local plugin_specs = {
   -- Only use these plugin on Windows and Mac and when LaTeX is installed
   {
     "lervag/vimtex",
+    lazy = false,
     enabled = function()
       if utils.executable("latex") then
         return true
       end
       return false
     end,
-    ft = { "tex" },
+    --ft = { "tex" },
   },
 
   -- Since tmux is only available on Linux and Mac, we only enable these plugins
