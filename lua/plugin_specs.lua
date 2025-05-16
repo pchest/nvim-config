@@ -46,8 +46,19 @@ local plugin_specs = {
       require("config.lsp")
     end,
   },
-
-  --{ 'neoclide/coc.nvim' },
+  { 'junegunn/limelight.vim'},
+  { 'junegunn/goyo.vim' },
+  { 'francoiscabrol/ranger.vim',
+    keys = {
+      {
+        "<leader>ra",
+        "<cmd>Ranger<cr>",
+        desc = "Open ranger",
+        mode = "n"
+      }
+    }
+  },
+    --{ 'neoclide/coc.nvim' },
 
   --{ 'davidhalter/jedi-vim' },
 
@@ -661,9 +672,9 @@ local plugin_specs = {
   --    require("copilot").setup {}
   --  end,
   --},
-  --{
-  --  'github/copilot.vim'
-  --},
+  {
+    'github/copilot.vim'
+  },
   {
   "LunarVim/bigfile.nvim",
   },
