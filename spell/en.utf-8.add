@@ -484,12 +484,8 @@ CNA
 subcorpus
 subcorpora
 conclust
-keyclust
-keyclust
 COVID
 WordNet
-keyclust
-keyclust
 Gigaword
 Agence
 Presse
@@ -500,3 +496,6 @@ aquacultural
 Trophic
 heteroskedasticity
 Gitee
+FastText
+GloVe
+keyclust
