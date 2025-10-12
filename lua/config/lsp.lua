@@ -116,7 +116,7 @@ capabilities.textDocument.foldingRange = {
     lineFoldingOnly = true
 }
 
-local lspconfig = require("lspconfig")
+local lspconfig = vim.lsp.config
 
 if utils.executable("pylsp") then
   local venv_path = os.getenv('VIRTUAL_ENV')
