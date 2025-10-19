@@ -13,8 +13,8 @@ vim.loader.enable()
 
 local utils = require("utils")
 
-local expected_version = "0.10.4"
-utils.is_compatible_version(expected_version)
+--local expected_version = "0.11.2"
+--utils.is_compatible_version(expected_version)
 
 local config_dir = vim.fn.stdpath("config")
 ---@cast config_dir string
@@ -31,3 +31,7 @@ require("mappings")
 vim.cmd("source ".. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
 -- colorscheme settings
 require("colorschemes")
+
+--let g:python3_host_prog="/home/patrick/anaconda3/bin/python3"
+vim.g.python3_host_prog = "/home/patrick/.pyenv/versions/3.12.10/bin/python3.12"
+
