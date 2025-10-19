@@ -146,123 +146,129 @@ vim.lsp.config("*", {
   flags = { debounce_text_changes = 500 },
 })
 
--- ── Explicit lspconfig setups for servers that need custom settings (old code) ─
-local ok_lspconfig, lspconfig = pcall(require, "lspconfig")
-if ok_lspconfig then
-  -- pylsp: formatter/linter/mypy/isort, venv-aware mypy executable
-  if utils.executable("pylsp") then
-    local venv_path = os.getenv("VIRTUAL_ENV")
-    local py_path = venv_path and (venv_path .. "/bin/python3") or vim.g.python3_host_prog
-    lspconfig.pylsp.setup({
-      settings = {
-        pylsp = {
-          plugins = {
-            -- formatters
-            black = { enabled = true },
-            autopep8 = { enabled = false },
-            yapf = { enabled = false },
-            -- linters
-            pylint = { enabled = true, executable = "pylint" },
-            ruff = { enabled = false },
-            pyflakes = { enabled = false },
-            pycodestyle = { enabled = false },
-            -- type checking
-            pylsp_mypy = {
-              enabled = true,
-              overrides = { "--python-executable", py_path, true },
-              report_progress = true,
-              live_mode = false,
-            },
-            -- completion
-            jedi_completion = { fuzzy = true },
-            -- import sorting
-            isort = { enabled = true },
+
+-- ── Global defaults for all servers (already above; keep as-is) ──────────────
+-- vim.lsp.config("*", { capabilities = capabilities, flags = { debounce_text_changes = 500 } })
+
+-- Helper
+local function have(exe) return vim.fn.executable(exe) == 1 end
+
+-- ── pylsp (formatter/linter/mypy/isort; venv-aware mypy) ─────────────────────
+if have("pylsp") then
+  local venv_path = os.getenv("VIRTUAL_ENV")
+  local py_path = venv_path and (venv_path .. "/bin/python3") or vim.g.python3_host_prog
+  vim.lsp.config("pylsp", {
+    cmd = { "pylsp" },
+    settings = {
+      pylsp = {
+        plugins = {
+          black = { enabled = true },
+          autopep8 = { enabled = false },
+          yapf = { enabled = false },
+          pylint = { enabled = true, executable = "pylint" },
+          ruff = { enabled = false },
+          pyflakes = { enabled = false },
+          pycodestyle = { enabled = false },
+          pylsp_mypy = {
+            enabled = true,
+            overrides = { "--python-executable", py_path, true },
+            report_progress = true,
+            live_mode = false,
           },
+          jedi_completion = { fuzzy = true },
+          isort = { enabled = true },
         },
       },
-      flags = { debounce_text_changes = 200 },
-      capabilities = capabilities,
-    })
-  else
-    vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Nvim-config" })
-  end
-
-  -- ltex-ls (grammar/spell)
-  if utils.executable("ltex-ls") then
-    lspconfig.ltex.setup({
-      -- If you installed a specific binary, set cmd here; otherwise use "ltex-ls"
-      -- cmd = { "/home/patrick/.local/share/ltex-ls/ltex-ls-16.0.0/bin/ltex-ls" },
-      filetypes = { "text", "plaintex", "tex", "markdown" },
-      settings = {
-        ltex = {
-          language = "en-US",
-          diagnosticSeverity = "information",
-          setenceCacheSize = 2000,
-          additionalRules = { enablePickyRules = true, motherTongue = "en" },
-          trace = { server = "verbose" },
-        },
-      },
-      flags = { debounce_text_changes = 300 },
-      capabilities = capabilities,
-    })
-  end
-
-  -- clangd
-  if utils.executable("clangd") then
-    lspconfig.clangd.setup({
-      filetypes = { "c", "cpp", "cc" },
-      flags = { debounce_text_changes = 500 },
-      capabilities = capabilities,
-    })
-  end
-
-  -- vim-language-server
-  if utils.executable("vim-language-server") then
-    lspconfig.vimls.setup({
-      flags = { debounce_text_changes = 500 },
-      capabilities = capabilities,
-    })
-  else
-    vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
-  end
-
-  -- bash-language-server
-  if utils.executable("bash-language-server") then
-    lspconfig.bashls.setup({ capabilities = capabilities })
-  end
-
-  -- lua-language-server
-  if utils.executable("lua-language-server") then
-    lspconfig.lua_ls.setup({
-      settings = { Lua = { runtime = { version = "LuaJIT" } } },
-      capabilities = capabilities,
-    })
-  end
+    },
+    flags = { debounce_text_changes = 200 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("pylsp")
+else
+  vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
 
--- ── Turn on “generic” servers with the new API, when binaries exist ───────────
--- Skip ones we already configured explicitly above.
-local explicitly_configured = {
-  pylsp = true, ltex = true, clangd = true, vimls = true, bashls = true, lua_ls = true,
-}
+-- ── ltex-ls (grammar/spell) ──────────────────────────────────────────────────
+if have("ltex-ls") then
+  vim.lsp.config("ltex", {
+    cmd = { "ltex-ls" }, -- set absolute path here if you use a custom install
+    filetypes = { "text", "plaintex", "tex", "markdown" },
+    settings = {
+      ltex = {
+        language = "en-US",
+        diagnosticSeverity = "information",
+        setenceCacheSize = 2000,
+        additionalRules = { enablePickyRules = true, motherTongue = "en" },
+        trace = { server = "verbose" },
+      },
+    },
+    flags = { debounce_text_changes = 300 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("ltex")
+end
 
-local enabled_lsp_servers = {
-  pyright = "pyright-langserver",   -- fixed executable name
-  ruff    = "ruff",
+-- ── clangd ───────────────────────────────────────────────────────────────────
+if have("clangd") then
+  vim.lsp.config("clangd", {
+    cmd = { "clangd" },
+    filetypes = { "c", "cpp", "cc" },
+    flags = { debounce_text_changes = 500 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("clangd")
+end
+
+-- ── vim-language-server ──────────────────────────────────────────────────────
+if have("vim-language-server") then
+  vim.lsp.config("vimls", {
+    cmd = { "vim-language-server", "--stdio" },
+    flags = { debounce_text_changes = 500 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("vimls")
+else
+  vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+end
+
+-- ── bash-language-server ─────────────────────────────────────────────────────
+if have("bash-language-server") then
+  vim.lsp.config("bashls", {
+    cmd = { "bash-language-server", "start" },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("bashls")
+end
+
+-- ── lua-language-server ──────────────────────────────────────────────────────
+if have("lua-language-server") then
+  vim.lsp.config("lua_ls", {
+    cmd = { "lua-language-server" },
+    settings = { Lua = { runtime = { version = "LuaJIT" } } },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("lua_ls")
+end
+
+-- ── Simple servers (enable if binaries exist) ────────────────────────────────
+-- Register minimal configs so enable() knows how to start them.
+vim.lsp.config("pyright", { cmd = { "pyright-langserver", "--stdio" }, capabilities = capabilities })
+vim.lsp.config("yamlls",  { cmd = { "yaml-language-server", "--stdio" }, capabilities = capabilities })
+vim.lsp.config("ruff",    { cmd = { "ruff", "server" }, capabilities = capabilities })
+
+local simple = {
+  pyright = "pyright-langserver",
   yamlls  = "yaml-language-server",
-  -- Add others here as you like; they’ll inherit defaults from vim.lsp.config("*", ...)
+  ruff    = "ruff",
 }
 
-for server_name, exe in pairs(enabled_lsp_servers) do
-  if not explicitly_configured[server_name] then
-    if utils.executable(exe) then
-      vim.lsp.enable(server_name)
-    else
-      vim.notify(
-        string.format("Executable '%s' for server '%s' not found! Server will not be enabled", exe, server_name),
-        vim.log.levels.WARN,
-        { title = "Nvim-config" }
-      )
-    end
+for name, exe in pairs(simple) do
+  if have(exe) then
+    vim.lsp.enable(name)
+  else
+    vim.notify(
+      ("Executable '%s' for server '%s' not found! Server will not be enabled"):format(exe, name),
+      vim.log.levels.WARN, { title = "Nvim-config" }
+    )
   end
 end

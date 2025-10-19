@@ -28,10 +28,26 @@ local plugin_specs = {
   { "hrsh7th/cmp-omni", lazy = true },
   { "hrsh7th/cmp-cmdline", lazy = true },
   { "quangnguyen30192/cmp-nvim-ultisnips", lazy = true },
+  --{
+  --  "hrsh7th/nvim-cmp",
+  --  name = "nvim-cmp",
+  --  event = "VeryLazy",
+  --  config = function()
+  --    require("config.nvim-cmp")
+  --  end,
+  --},
   {
     "hrsh7th/nvim-cmp",
     name = "nvim-cmp",
-    event = "VeryLazy",
+    event = { "InsertEnter", "CmdlineEnter" },  -- ensure cmp exists for ':' and insert
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-omni",
+      "hrsh7th/cmp-cmdline",
+      "quangnguyen30192/cmp-nvim-ultisnips",
+    },
     config = function()
       require("config.nvim-cmp")
     end,
@@ -573,14 +589,26 @@ local plugin_specs = {
 --      })
 --    end
 --  },
-  { "R-nvim/cmp-r" },
-  {
-    "hrsh7th/nvim-cmp",
-    config = function()
-      require("cmp").setup({ sources = {{ name = "cmp_r" }}})
-      require("cmp_r").setup({ })
-    end,
-  },
+  --{ "R-nvim/cmp-r" },
+  { "R-nvim/cmp-r",
+  config = function()
+    local ok_cmp, cmp = pcall(require, "cmp")
+    if not ok_cmp then return end
+    -- prepend cmp_r for R filetypes without overwriting your global sources
+    local base = cmp.get_config().sources or {}
+    cmp.setup.filetype({ "r", "rmd", "rnoweb", "qmd" }, {
+      sources = cmp.config.sources({ { name = "cmp_r" } }, base),
+    })
+  end,
+},
+
+  --{
+  --  "hrsh7th/nvim-cmp",
+  --  config = function()
+  --    require("cmp").setup({ sources = {{ name = "cmp_r" }}})
+  --    require("cmp_r").setup({ })
+  --  end,
+  --},
   -- Debugger plugin
   {
     "sakhnik/nvim-gdb",
@@ -657,18 +685,18 @@ local plugin_specs = {
       },
     },
   },
-  -- { 'github/copilot.vim' },
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-    },
-    cmd = { "CopilotChat" },
-  },
+  { 'github/copilot.vim' },
+  --{
+  --  "CopilotC-Nvim/CopilotChat.nvim",
+  --  dependencies = {
+  --    { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+  --  },
+  --  opts = {
+  --    debug = true, -- Enable debugging
+  --    -- See Configuration section for rest
+  --  },
+  --  cmd = { "CopilotChat" },
+  --},
   {
   "LunarVim/bigfile.nvim",
   },
