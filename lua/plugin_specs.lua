@@ -22,26 +22,33 @@ end
 
 local plugin_specs = {
   -- auto-completion engine
+  { "hrsh7th/cmp-nvim-lsp", lazy = true },
+  { "hrsh7th/cmp-path", lazy = true },
+  { "hrsh7th/cmp-buffer", lazy = true },
+  { "hrsh7th/cmp-omni", lazy = true },
+  { "hrsh7th/cmp-cmdline", lazy = true },
+  { "quangnguyen30192/cmp-nvim-ultisnips", lazy = true },
   {
     "hrsh7th/nvim-cmp",
-    -- event = 'InsertEnter',
+    name = "nvim-cmp",
     event = "VeryLazy",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "onsails/lspkind-nvim",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-omni",
-      "quangnguyen30192/cmp-nvim-ultisnips",
-    },
     config = function()
       require("config.nvim-cmp")
     end,
   },
-
+  -- {
+  --   "saghen/blink.cmp",
+  --   -- optional: provides snippets for the snippet source
+  --   dependencies = { "rafamadriz/friendly-snippets" },
+  --   -- use a release tag to download pre-built binaries
+  --   version = "1.*",
+  --   config = function()
+  --     require("config.blink-cmp")
+  --   end,
+  --   opts_extend = { "sources.default" },
+  -- },
   {
     "neovim/nvim-lspconfig",
-    event = { "BufRead", "BufNewFile" },
     config = function()
       require("config.lsp")
     end,
@@ -63,16 +70,16 @@ local plugin_specs = {
   --{ 'davidhalter/jedi-vim' },
 
   { 'mbbill/fencview' },
-
+  {
+    "dnlhc/glance.nvim",
+    config = function()
+      require("config.glance")
+    end,
+    event = "VeryLazy",
+  },
   {
     "nvim-treesitter/nvim-treesitter",
---    enabled = function()
---      if vim.g.is_mac then
---        return true
---      end
---      return false
---    end,
-    event = "VeryLazy",
+    lazy = true,
     build = ":TSUpdate",
     config = function ()
       require("nvim-treesitter.configs").setup({
@@ -82,7 +89,6 @@ local plugin_specs = {
       })
     end
   },
-
   -- Python-related text object
   { "jeetsukumaran/vim-pythonsense", ft = { "python" } },
 
@@ -95,6 +101,14 @@ local plugin_specs = {
     init = function()
         vim.g.molten_image_provider = "image.nvim"
         vim.g.molten_output_win_max_height = 20
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "VeryLazy",
+    branch = "master",
+    config = function()
+      require("config.treesitter-textobjects")
     end,
   },
 
@@ -127,10 +141,7 @@ local plugin_specs = {
   {
     "vlime/vlime",
     enabled = function()
-      if utils.executable("sbcl") then
-        return true
-      end
-      return false
+      return utils.executable("sbcl")
     end,
     config = function(plugin)
       vim.opt.rtp:append(plugin.dir .. "/vim")
@@ -141,7 +152,7 @@ local plugin_specs = {
   -- Super fast buffer jump
   {
     "smoka7/hop.nvim",
-    event = "VeryLazy",
+    keys = { "f" },
     config = function()
       require("config.nvim_hop")
     end,
@@ -156,20 +167,6 @@ local plugin_specs = {
       require("config.hlslens")
     end,
   },
-  {
-    "Yggdroot/LeaderF",
-    cmd = "Leaderf",
-    build = function()
-      local leaderf_path = plugin_dir .. "/LeaderF"
-      vim.opt.runtimepath:append(leaderf_path)
-      vim.cmd("runtime! plugin/leaderf.vim")
-
-      if not vim.g.is_win then
-        vim.cmd("LeaderfInstallCExtension")
-      end
-    end,
-  },
-  "nvim-lua/plenary.nvim",
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
@@ -189,19 +186,17 @@ local plugin_specs = {
   },
   {
     "ibhagwan/fzf-lua",
-    -- optional for icon support
-    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      -- calling `setup` is optional for customization
-      require("fzf-lua").setup {}
+      require("config.fzf-lua")
     end,
+    event = "VeryLazy",
   },
   { "benlubas/wrapping-paper.nvim" },
   {
-    "MeanderingProgrammer/markdown.nvim",
+    "MeanderingProgrammer/render-markdown.nvim",
     main = "render-markdown",
     opts = {},
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    ft = { "markdown" },
   },
   -- A list of colorscheme plugin you may want to try. Find what suits you.
   { "navarasu/onedark.nvim", lazy = true },
@@ -220,11 +215,32 @@ local plugin_specs = {
     branch = "v2",
   },
   { "rebelot/kanagawa.nvim", lazy = true },
-  { "nvim-tree/nvim-web-devicons", event = "VeryLazy" },
+  { "miikanissi/modus-themes.nvim", priority = 1000 },
+  { "wtfox/jellybeans.nvim", priority = 1000 },
+  { "projekt0n/github-nvim-theme", name = "github-theme" },
+  { "e-ink-colorscheme/e-ink.nvim", priority = 1000 },
+  { "ficcdaf/ashen.nvim", priority = 1000 },
+  { "savq/melange-nvim", priority = 1000 },
+  { "Skardyy/makurai-nvim", priority = 1000 },
+  { "vague2k/vague.nvim", priority = 1000 },
+  { "webhooked/kanso.nvim", priority = 1000 },
+  { "zootedb0t/citruszest.nvim", priority = 1000 },
+
+  -- plugins to provide nerdfont icons
+  {
+    "nvim-mini/mini.icons",
+    version = false,
+    config = function()
+      -- this is the compatibility fix for plugins that only support nvim-web-devicons
+      require("mini.icons").mock_nvim_web_devicons()
+      require("mini.icons").tweak_lsp_kind()
+    end,
+    lazy = true,
+  },
 
   {
     "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
+    event = "BufRead",
     cond = firenvim_not_active,
     config = function()
       require("config.lualine")
@@ -250,11 +266,16 @@ local plugin_specs = {
   },
 
   {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "VeryLazy",
-    main = "ibl",
+    "nvim-mini/mini.indentscope",
+    version = false,
     config = function()
-      require("config.indent-blankline")
+      local mini_indent = require("mini.indentscope")
+      mini_indent.setup {
+        draw = {
+          animation = mini_indent.gen_animation.none(),
+        },
+        symbol = "▏",
+      }
     end,
   },
   {
@@ -280,7 +301,7 @@ local plugin_specs = {
     end,
   },
   -- Highlight URLs inside vim
-  { "itchyny/vim-highlighturl", event = "VeryLazy" },
+  { "itchyny/vim-highlighturl", event = "BufReadPost" },
 
   -- notification plugin
   {
@@ -290,6 +311,8 @@ local plugin_specs = {
       require("config.nvim-notify")
     end,
   },
+
+  { "nvim-lua/plenary.nvim", lazy = true },
 
   -- For Windows and Mac, we can open an URL in the browser. For Linux, it may
   -- not be possible since we maybe in a server which disables GUI.
@@ -301,13 +324,8 @@ local plugin_specs = {
       vim.g.netrw_nogx = 1 -- disable netrw gx
     end,
     enabled = function()
-      if vim.g.is_win or vim.g.is_mac then
-        return true
-      else
-        return false
-      end
+      return vim.g.is_win or vim.g.is_mac
     end,
-    dependencies = { "nvim-lua/plenary.nvim" },
     config = true, -- default settings
     submodules = false, -- not needed, submodules are required only for tests
   },
@@ -317,19 +335,19 @@ local plugin_specs = {
   {
     "liuchengxu/vista.vim",
     enabled = function()
-      if utils.executable("ctags") then
-        return true
-      else
-        return false
-      end
+      return utils.executable("ctags")
     end,
     cmd = "Vista",
   },
 
   -- Snippet engine and snippet template
-  { "SirVer/ultisnips", dependencies = {
-    "honza/vim-snippets",
-  }, event = "InsertEnter" },
+  {
+    "SirVer/ultisnips",
+    dependencies = {
+      "honza/vim-snippets",
+    },
+    event = "InsertEnter",
+  },
 
   -- Automatic insertion and deletion of a pair of characters
   {
@@ -339,19 +357,19 @@ local plugin_specs = {
   },
 
   -- Comment plugin
-  { "tpope/vim-commentary", event = "VeryLazy" },
+  {
+    "tpope/vim-commentary",
+    keys = {
+      { "gc", mode = "n" },
+      { "gc", mode = "v" },
+    },
+  },
 
   -- Multiple cursor plugin like Sublime Text?
   -- 'mg979/vim-visual-multi'
 
-  -- Autosave files on certain events
-  { "907th/vim-auto-save", event = "InsertEnter" },
-
   -- Show undo history visually
   { "simnalamburt/vim-mundo", cmd = { "MundoToggle", "MundoShow" } },
-
-  -- better UI for some nvim actions
-  { "stevearc/dressing.nvim" },
 
   -- Manage your yank history
   {
@@ -359,7 +377,7 @@ local plugin_specs = {
     config = function()
       require("config.yanky")
     end,
-    event = "VeryLazy",
+    cmd = "YankyRingHistory",
   },
 
   -- Handy unix command inside Vim (Rename, Move etc.)
@@ -373,10 +391,7 @@ local plugin_specs = {
   {
     "lyokha/vim-xkbswitch",
     enabled = function()
-      if vim.g.is_mac and utils.executable("xkbswitch") then
-        return true
-      end
-      return false
+      return vim.g.is_mac and utils.executable("xkbswitch")
     end,
     event = { "InsertEnter" },
   },
@@ -384,16 +399,10 @@ local plugin_specs = {
   {
     "Neur1n/neuims",
     enabled = function()
-      if vim.g.is_win then
-        return true
-      end
-      return false
+      return vim.g.is_win
     end,
     event = { "InsertEnter" },
   },
-
-  -- Auto format tools
-  { "sbdchd/neoformat", cmd = { "Neoformat" } },
 
   -- Git command inside vim
   {
@@ -403,10 +412,27 @@ local plugin_specs = {
       require("config.fugitive")
     end,
   },
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- required
+      "sindrets/diffview.nvim", -- optional - Diff integration
+      -- Only one of these is needed.
+      "ibhagwan/fzf-lua", -- optional
+    },
+    event = "User InGitRepo",
+  },
 
   -- Better git log display
   { "rbong/vim-flog", cmd = { "Flog" } },
-  { "akinsho/git-conflict.nvim", version = "*", config = true },
+  {
+    "akinsho/git-conflict.nvim",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("config.git-conflict")
+    end,
+  },
   {
     "ruifm/gitlinker.nvim",
     event = "User InGitRepo",
@@ -416,18 +442,18 @@ local plugin_specs = {
   },
 
   -- Show git change (change, delete, add) signs in vim sign column
---  {
---    "lewis6991/gitsigns.nvim",
---    config = function()
---      require("config.gitsigns")
---    end,
---  },
-
-  -- Better git commit experience
-  { "rhysd/committia.vim", lazy = true },
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      require("config.gitsigns")
+    end,
+    event = "BufRead",
+    version = "*",
+  },
 
   {
     "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen" },
   },
 
   {
@@ -438,14 +464,11 @@ local plugin_specs = {
     end,
   },
 
-  -- Another markdown plugin
-  { "preservim/vim-markdown", ft = { "markdown" } },
-
   -- Faster footnote generation
   { "vim-pandoc/vim-markdownfootnotes", ft = { "markdown" } },
 
   -- Vim tabular plugin for manipulate tabular, required by markdown plugins
-  { "godlygeek/tabular", cmd = { "Tabularize" } },
+  { "godlygeek/tabular", ft = { "markdown" } },
 
   -- Markdown previewing (only for Mac and Windows)
   --{
@@ -453,19 +476,15 @@ local plugin_specs = {
   --  build = "cd app && npm install",
   --  ft = { "markdown" },
   --},
-
   {
     "rhysd/vim-grammarous",
     enabled = function()
-      if vim.g.is_mac then
-        return true
-      end
-      return false
+      return vim.g.is_mac
     end,
     ft = { "markdown" },
   },
 
-  { "chrisbra/unicode.vim", event = "VeryLazy" },
+  { "chrisbra/unicode.vim", keys = { "ga" }, cmd = { "UnicodeSearch" } },
 
   -- Additional powerful text object for vim, this plugin should be studied
   -- carefully to use its full power
@@ -474,18 +493,12 @@ local plugin_specs = {
   -- Plugin to manipulate character pairs quickly
   { "machakann/vim-sandwich", event = "VeryLazy" },
 
-  -- Add indent object for vim (useful for languages like Python)
-  { "michaeljsmith/vim-indent-object", event = "VeryLazy" },
-
   -- Only use these plugin on Windows and Mac and when LaTeX is installed
   {
     "lervag/vimtex",
     lazy = false,
     enabled = function()
-      if utils.executable("latex") then
-        return true
-      end
-      return false
+      return utils.executable("latex")
     end,
     --ft = { "tex" },
   },
@@ -496,10 +509,7 @@ local plugin_specs = {
   {
     "tmux-plugins/vim-tmux",
     enabled = function()
-      if utils.executable("tmux") then
-        return true
-      end
-      return false
+      return utils.executable("tmux")
     end,
     ft = { "tmux" },
   },
@@ -516,8 +526,7 @@ local plugin_specs = {
   {
     "glacambre/firenvim",
     enabled = function()
-      local result = vim.g.is_win or vim.g.is_mac
-      return result
+      return vim.g.is_win or vim.g.is_mac
     end,
     -- it seems that we can only call the firenvim function directly.
     -- Using vim.fn or vim.cmd to call this function will fail.
@@ -576,10 +585,7 @@ local plugin_specs = {
   {
     "sakhnik/nvim-gdb",
     enabled = function()
-      if vim.g.is_win or vim.g.is_linux then
-        return true
-      end
-      return false
+      return vim.g.is_win or vim.g.is_linux
     end,
     build = { "bash install.sh" },
     lazy = true,
@@ -591,18 +597,9 @@ local plugin_specs = {
   {
     "ojroques/vim-oscyank",
     enabled = function()
-      if vim.g.is_linux then
-        return true
-      end
-      return false
+      return vim.g.is_linux
     end,
     cmd = { "OSCYank", "OSCYankReg" },
-  },
-
-  -- The missing auto-completion for cmdline!
-  {
-    "gelguy/wilder.nvim",
-    build = ":UpdateRemotePlugins",
   },
 
   -- showing keybindings
@@ -613,15 +610,30 @@ local plugin_specs = {
       require("config.which-key")
     end,
   },
-
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      -- more beautiful vim.ui.input
+      input = {
+        enabled = true,
+        win = {
+          relative = "cursor",
+          backdrop = true,
+        },
+      },
+      -- more beautiful vim.ui.select
+      picker = { enabled = true },
+    },
+  },
   -- show and trim trailing whitespaces
   { "jdhao/whitespace.nvim", event = "VeryLazy" },
 
   -- file explorer
   {
     "nvim-tree/nvim-tree.lua",
-    event = "VeryLazy",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = { "<space>s" },
     config = function()
       require("config.nvim-tree")
     end,
@@ -629,8 +641,7 @@ local plugin_specs = {
 
   {
     "j-hui/fidget.nvim",
-    event = "VeryLazy",
-    tag = "legacy",
+    event = "BufRead",
     config = function()
       require("config.fidget-nvim")
     end,
@@ -638,42 +649,25 @@ local plugin_specs = {
   {
     "folke/lazydev.nvim",
     ft = "lua", -- only load on lua files
-    opts = {},
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
   },
+  -- { 'github/copilot.vim' },
   {
-  "olimorris/codecompanion.nvim",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-treesitter/nvim-treesitter",
-    "hrsh7th/nvim-cmp", -- Optional: For using slash commands and variables in the chat buffer
-    "nvim-telescope/telescope.nvim", -- Optional: For using slash commands
-    { "MeanderingProgrammer/render-markdown.nvim", ft = { "markdown", "codecompanion" } }, -- Optional: For prettier markdown rendering
-    { "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves `vim.ui.select`
-  },
-  config = true
-},
-  --{
-  --  "CopilotC-Nvim/CopilotChat.nvim",
-  --  branch = "canary",
-  --  dependencies = {
-  --    { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-  --    { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
-  --  },
-  --  opts = {
-  --    debug = true, -- Enable debugging
-  --    -- See Configuration section for rest
-  --  },
-  --  -- See Commands section for default commands if you want to lazy load on them
-  --},
-  --{
-  --  "zbirenbaum/copilot.lua",
-  --  cmd = "Copilot",
-  --  config = function()
-  --    require("copilot").setup {}
-  --  end,
-  --},
-  {
-    'github/copilot.vim'
+    "CopilotC-Nvim/CopilotChat.nvim",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    cmd = { "CopilotChat" },
   },
   {
   "LunarVim/bigfile.nvim",
@@ -753,14 +747,40 @@ local plugin_specs = {
     "smjonas/live-command.nvim",
     -- live-command supports semantic versioning via Git tags
     -- tag = "2.*",
-    cmd = "Preview",
+    event = "VeryLazy",
     config = function()
       require("config.live-command")
     end,
-    event = "VeryLazy"
+  },
+  {
+    -- show hint for code actions, the user can also implement code actions themselves,
+    -- see discussion here: https://github.com/neovim/neovim/issues/14869
+    "kosayoda/nvim-lightbulb",
+    config = function()
+      require("config.lightbulb")
+    end,
+    event = "LspAttach",
+  },
+  {
+    "Bekaboo/dropbar.nvim",
+    event = "VeryLazy",
+  },
+  {
+    "catgoose/nvim-colorizer.lua",
+    event = "BufReadPre",
+    opts = { -- set to setup table
+    },
+  },
+  {
+    "stevearc/quicker.nvim",
+    event = "FileType qf",
+    ---@module "quicker"
+    ---@type quicker.SetupOptions
+    opts = {},
   },
 }
 
+---@diagnostic disable-next-line: missing-fields
 require("lazy").setup {
   spec = plugin_specs,
   ui = {
@@ -770,5 +790,6 @@ require("lazy").setup {
   },
   rocks = {
     enabled = false,
+    hererocks = false,
   },
 }

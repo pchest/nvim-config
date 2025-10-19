@@ -9,20 +9,14 @@
     <a>
       <img alt="Windows" src="https://img.shields.io/badge/Windows-%23.svg?style=flat-square&logo=windows&color=0078D6&logoColor=white" />
     </a>
-    <a href="https://github.com/jdhao/nvim-config/releases/latest">
-      <img alt="Latest release" src="https://img.shields.io/github/v/release/jdhao/nvim-config" />
-    </a>
     <a href="https://github.com/neovim/neovim/releases/tag/stable">
-      <img src="https://img.shields.io/badge/Neovim-0.10.1-blueviolet.svg?style=flat-square&logo=Neovim&logoColor=green" alt="Neovim minimum version"/>
+      <img src="https://img.shields.io/badge/Neovim-0.11.4-blueviolet.svg?style=flat-square&logo=Neovim&logoColor=green" alt="Neovim minimum version"/>
     </a>
     <a href="https://github.com/jdhao/nvim-config/search?l=vim-script">
       <img src="https://img.shields.io/github/languages/top/jdhao/nvim-config" alt="Top languages"/>
     </a>
     <a href="https://github.com/jdhao/nvim-config/graphs/commit-activity">
       <img src="https://img.shields.io/github/commit-activity/m/jdhao/nvim-config?style=flat-square" />
-    </a>
-    <a href="https://github.com/jdhao/nvim-config/releases/tag/v0.10.0">
-      <img src="https://img.shields.io/github/commits-since/jdhao/nvim-config/v0.10.0?style=flat-square" />
     </a>
     <a href="https://github.com/jdhao/nvim-config/graphs/contributors">
       <img src="https://img.shields.io/github/contributors/jdhao/nvim-config?style=flat-square" />
@@ -32,6 +26,9 @@
     </a>
     <a href="https://github.com/jdhao/nvim-config/blob/master/LICENSE">
       <img src="https://img.shields.io/github/license/jdhao/nvim-config?style=flat-square&logo=GNU&label=License" alt="License"/>
+    </a>
+    <a href="https://deepwiki.com/jdhao/nvim-config">
+      <img src="https://deepwiki.com/badge.svg" alt="deepwiki"/>
     </a>
 </p>
 </div>
@@ -62,7 +59,7 @@ and how to set up on different platforms (Linux, macOS, and Windows).
 + Language server protocol (LSP) support via [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
 + Git integration via [vim-fugitive](https://github.com/tpope/vim-fugitive).
 + Better escaping from insert mode via [better-escape.vim](https://github.com/nvim-zh/better-escape.vim).
-+ Ultra-fast project-wide fuzzy searching via [LeaderF](https://github.com/Yggdroot/LeaderF).
++ Ultra-fast project-wide fuzzy searching via [fzf-lua](https://github.com/ibhagwan/fzf-lua).
 + Faster code commenting via [vim-commentary](https://github.com/tpope/vim-commentary).
 + Faster matching pair insertion and jump via [nvim-autopairs](https://github.com/windwp/nvim-autopairs).
 + Smarter and faster matching pair management (add, replace or delete) via [vim-sandwich](https://github.com/machakann/vim-sandwich).
@@ -72,7 +69,6 @@ and how to set up on different platforms (Linux, macOS, and Windows).
 + File tree explorer via [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua).
 + Better quickfix list with [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf).
 + Show search index and count with [nvim-hlslens](https://github.com/kevinhwang91/nvim-hlslens).
-+ Command line auto-completion via [wilder.nvim](https://github.com/gelguy/wilder.nvim).
 + User-defined mapping hint via [which-key.nvim](https://github.com/folke/which-key.nvim).
 + Asynchronous code execution via [asyncrun.vim](https://github.com/skywind3000/asyncrun.vim).
 + Code highlighting via [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter).
@@ -82,7 +78,6 @@ and how to set up on different platforms (Linux, macOS, and Windows).
 + LaTeX editing and previewing via [vimtex](https://github.com/lervag/vimtex)
 + Animated GUI style notification via [nvim-notify](https://github.com/rcarriga/nvim-notify).
 + Tags navigation via [vista](https://github.com/liuchengxu/vista.vim).
-+ Code formatting via [Neoformat](https://github.com/sbdchd/neoformat).
 + Undo management via [vim-mundo](https://github.com/simnalamburt/vim-mundo)
 + Code folding with [nvim-ufo](https://github.com/kevinhwang91/nvim-ufo) and [statuscol.nvim](https://github.com/luukvbaal/statuscol.nvim)
 + ......
@@ -97,10 +92,10 @@ For more UI demos, check [here](https://github.com/jdhao/nvim-config/issues/15).
 <img src="https://user-images.githubusercontent.com/16662357/183256752-fb23b215-a6b8-4646-beed-9999f52d53f1.png" width="800">
 </p>
 
-## File fuzzy finding using LeaderF
+## File fuzzy finding using fzf-lua
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/16662357/183257017-2d9d7605-3c4b-4e1d-8955-30998f9b6f28.gif" width="800">
+<img src="https://github.com/user-attachments/assets/3199e35d-121a-487b-bfd1-58eb69b0b48a" width="800">
 </p>
 
 ## Code autocompletion with nvim-cmp
@@ -113,12 +108,6 @@ For more UI demos, check [here](https://github.com/jdhao/nvim-config/issues/15).
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/16662357/128590833-aaa05d53-19ef-441d-a5a9-ba1bbd3936c1.gif" width="800">
-</p>
-
-## Command-line autocompletion with wilder.nvim
-
-<p align="center">
-<img src="https://user-images.githubusercontent.com/16662357/147677787-8e5d229a-a16a-420e-98f5-88f2a1be84a2.gif" width="800">
 </p>
 
 ## Tags
@@ -191,7 +180,6 @@ Some of the shortcuts I use frequently are listed here. In the following shortcu
 | `Alt-j`           | Normal        | Linux/macOS/Win | Move current line or selected lines down                                 |
 | `Alt-m`           | Normal        | macOS/Win       | Markdown previewing in system browser                                    |
 | `Alt-Shift-m`     | Normal        | macOS/Win       | Stopping Markdown previewing in system browser                           |
-| `ob`              | Normal/Visual | macOS/Win       | Open link under cursor or search visual selection                        |
 | `ctrl-u`          | Insert        | Linux/macOS/Win | Turn word under cursor to upper case                                     |
 | `ctrl-t`          | Insert        | Linux/macOS/Win | Turn word under cursor to title case                                     |
 | `jk`              | Insert        | Linux/macOS/Win | Return to Normal mode without lagging                                    |
@@ -206,6 +194,7 @@ In addition to commands provided by various plugins, I have also created some cu
 | `Edit`       | edit multiple files at the same time, supports globing                  | `Edit *.vim`                   |
 | `Datetime`   | print current date and time or convert Unix time stamp to date and time | `Datetime 12345` or `Datetime` |
 | `JSONFormat` | format a JSON file                                                      | `JSONFormat`                   |
+| `CopyPath`   | copy current file path to clipboard                                     | `CopyPath relative`            |
 
 # Contributing
 
