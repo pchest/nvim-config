@@ -22,7 +22,7 @@ api.nvim_create_autocmd({ "TextYankPost" }, {
   pattern = "*",
   group = yank_group,
   callback = function()
-    vim.highlight.on_yank { higroup = "YankColor", timeout = 300 }
+    vim.hl.on_yank { higroup = "YankColor", timeout = 300 }
   end,
 })
 
@@ -37,7 +37,8 @@ api.nvim_create_autocmd({ "CursorMoved" }, {
 api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
   group = yank_group,
-  callback = function(ev)
+  ---@diagnostic disable-next-line: unused-local
+  callback = function(context)
     if vim.v.event.operator == "y" then
       vim.fn.setpos(".", vim.g.current_cursor_pos)
     end
@@ -135,48 +136,6 @@ api.nvim_create_autocmd("TermOpen", {
   end,
 })
 
--- Return to last cursor position when opening a file, note that here we cannot use BufReadPost
--- as event. It seems that when BufReadPost is triggered, FileType event is still not run.
--- So the filetype for this buffer is empty string.
-api.nvim_create_autocmd("FileType", {
-  group = api.nvim_create_augroup("resume_cursor_position", { clear = true }),
-  pattern = "*",
-  callback = function(ev)
-    local mark_pos = api.nvim_buf_get_mark(ev.buf, '"')
-    local last_cursor_line = mark_pos[1]
-
-    local max_line = vim.fn.line("$")
-    local buf_filetype = api.nvim_get_option_value("filetype", { buf = ev.buf })
-    local buftype = api.nvim_get_option_value("buftype", { buf = ev.buf })
-
-    -- only handle normal files
-    if buf_filetype == "" or buftype ~= "" then
-      return
-    end
-
-    -- Only resume last cursor position when there is no go-to-line command (something like '+23').
-    if vim.fn.match(vim.v.argv, [[\v^\+(\d){1,}$]]) ~= -1 then
-      return
-    end
-
-    if last_cursor_line > 1 and last_cursor_line <= max_line then
-      -- vim.print(string.format("mark_pos: %s", vim.inspect(mark_pos)))
-      -- it seems that without vim.schedule, the cursor position can not be set correctly
-      vim.schedule(function()
-        local status, result = pcall(api.nvim_win_set_cursor, 0, mark_pos)
-        if not status then
-          api.nvim_err_writeln(string.format("Failed to resume cursor position. Context %s, error: %s",
-          vim.inspect(ev), result))
-        end
-      end)
-      -- the following two ways also seem to work,
-      -- ref: https://www.reddit.com/r/neovim/comments/104lc26/how_can_i_press_escape_key_using_lua/
-      -- vim.api.nvim_feedkeys("g`\"", "n", true)
-      -- vim.fn.execute("normal! g`\"")
-    end
-  end,
-})
-
 local number_toggle_group = api.nvim_create_augroup("numbertoggle", { clear = true })
 api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
   pattern = "*",
@@ -204,20 +163,22 @@ api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
   desc = "Define or overrride some highlight groups",
   callback = function()
-    vim.cmd([[
-      " For yank highlight
-      highlight YankColor ctermfg=59 ctermbg=41 guifg=#34495E guibg=#2ECC71
+    -- For yank highlight
+    vim.api.nvim_set_hl(0, "YankColor", { fg = "#34495E", bg = "#2ECC71", ctermfg = 59, ctermbg = 41 })
 
-      " For cursor colors
-      highlight Cursor cterm=bold gui=bold guibg=#00c918 guifg=black
-      highlight Cursor2 guifg=red guibg=red
+    -- For cursor colors
+    vim.api.nvim_set_hl(0, "Cursor", { fg = "black", bg = "#00c918", bold = true })
+    vim.api.nvim_set_hl(0, "Cursor2", { fg = "red", bg = "red" })
 
-      " For floating windows border highlight
-      highlight FloatBorder guifg=LightGreen guibg=NONE
+    -- For floating windows border highlight
+    vim.api.nvim_set_hl(0, "FloatBorder", { fg = "LightGreen", bg = "None", bold = true })
 
-      " highlight for matching parentheses
-      highlight MatchParen cterm=bold,underline gui=bold,underline
-    ]])
+    local hl = vim.api.nvim_get_hl(0, { name = "NormalFloat" })
+    -- change the background color of floating window to None, so it blenders better
+    vim.api.nvim_set_hl(0, "NormalFloat", { fg = hl.fg, bg = "None" })
+
+    -- highlight for matching parentheses
+    vim.api.nvim_set_hl(0, "MatchParen", { bold = true, underline = true })
   end,
 })
 
@@ -225,17 +186,18 @@ api.nvim_create_autocmd("BufEnter", {
   pattern = "*",
   group = api.nvim_create_augroup("auto_close_win", { clear = true }),
   desc = "Quit Nvim if we have only one window, and its filetype match our pattern",
-  callback = function(ev)
-    local quit_filetypes = {'qf', 'vista', 'NvimTree'}
+  ---@diagnostic disable-next-line: unused-local
+  callback = function(context)
+    local quit_filetypes = { "qf", "vista", "NvimTree" }
 
     local should_quit = true
     local tabwins = api.nvim_tabpage_list_wins(0)
 
     for _, win in pairs(tabwins) do
       local buf = api.nvim_win_get_buf(win)
-      local bf = fn.getbufvar(buf, '&filetype')
+      local buf_type = vim.api.nvim_get_option_value("filetype", { buf = buf })
 
-      if fn.index(quit_filetypes, bf) == -1 then
+      if not vim.tbl_contains(quit_filetypes, buf_type) then
         should_quit = false
       end
     end
@@ -243,33 +205,40 @@ api.nvim_create_autocmd("BufEnter", {
     if should_quit then
       vim.cmd("qall")
     end
-  end
+  end,
 })
 
-api.nvim_create_autocmd({"VimEnter", "DirChanged"}, {
+api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   group = api.nvim_create_augroup("git_repo_check", { clear = true }),
   pattern = "*",
   desc = "check if we are inside Git repo",
-  command = "call utils#Inside_git_repo()"
+  callback = function()
+    utils.inside_git_repo()
+  end,
 })
 
 -- ref: https://vi.stackexchange.com/a/169/15292
 api.nvim_create_autocmd("BufReadPre", {
   group = api.nvim_create_augroup("large_file", { clear = true }),
   pattern = "*",
-  desc = "check if we are inside Git repo",
-  callback = function (ev)
-    local file_size_limit =524288 -- 0.5MB
+  desc = "optimize for large file",
+  callback = function(ev)
+    local file_size_limit = 524288 -- 0.5MB
     local f = ev.file
 
     if fn.getfsize(f) > file_size_limit or fn.getfsize(f) == -2 then
       vim.o.eventignore = "all"
+
+      -- show ruler
+      vim.o.ruler = true
+
       --  turning off relative number helps a lot
       vim.wo.relativenumber = false
+      vim.wo.number = false
 
       vim.bo.swapfile = false
       vim.bo.bufhidden = "unload"
       vim.bo.undolevels = -1
     end
-  end
+  end,
 })

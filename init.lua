@@ -13,7 +13,7 @@ vim.loader.enable()
 
 local utils = require("utils")
 
-local expected_version = "0.11.3"
+local expected_version = "0.11.4"
 utils.is_compatible_version(expected_version)
 
 local config_dir = vim.fn.stdpath("config")
@@ -28,6 +28,17 @@ require("custom-autocmd")
 -- all the user-defined mappings
 require("mappings")
 -- all the plugins installed and their configurations
-vim.cmd("source ".. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
+vim.cmd("source " .. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
+
+-- diagnostic related config
+require("diagnostic-conf")
+
 -- colorscheme settings
-require("colorschemes")
+
+--let g:python3_host_prog="/home/patrick/anaconda3/bin/python3"
+vim.g.python3_host_prog = "/home/patrick/.pyenv/versions/3.12.10/bin/python3.12"
+
+local color_scheme = require("colorschemes")
+
+-- Load a random colorscheme
+color_scheme.rand_colorscheme()

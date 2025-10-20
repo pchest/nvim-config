@@ -1,273 +1,274 @@
-local fn = vim.fn
-local api = vim.api
-local keymap = vim.keymap
-local lsp = vim.lsp
-local diagnostic = vim.diagnostic
-
+-- utils detection helper
 local utils = require("utils")
 
--- set quickfix list from diagnostics in a certain buffer, not the whole workspace
-local set_qflist = function(buf_num, severity)
-  local diagnostics = nil
-  diagnostics = diagnostic.get(buf_num, { severity = severity })
-
-  local qf_items = diagnostic.toqflist(diagnostics)
-  vim.fn.setqflist({}, ' ', { title = 'Diagnostics', items = qf_items })
-
-  -- open quickfix by default
-  vim.cmd[[copen]]
-end
-
-local custom_attach = function(client, bufnr)
-  -- Mappings.
-  local map = function(mode, l, r, opts)
-    opts = opts or {}
-    opts.silent = true
-    opts.buffer = bufnr
-    keymap.set(mode, l, r, opts)
-  end
-
-  map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
-  map("n", "<C-]>", vim.lsp.buf.definition)
-  map("n", "K", vim.lsp.buf.hover)
-  map("n", "<C-k>", vim.lsp.buf.signature_help)
-  map("n", "<space>rn", vim.lsp.buf.rename, { desc = "varialbe rename" })
-  map("n", "gr", vim.lsp.buf.references, { desc = "show references" })
-  map("n", "[d", diagnostic.goto_prev, { desc = "previous diagnostic" })
-  map("n", "]d", diagnostic.goto_next, { desc = "next diagnostic" })
-  -- this puts diagnostics from opened files to quickfix
-  map("n", "<space>qw", diagnostic.setqflist, { desc = "put window diagnostics to qf" })
-  -- this puts diagnostics from current buffer to quickfix
-  map("n", "<space>qb", function() set_qflist(bufnr) end, { desc = "put buffer diagnostics to qf" })
-  map("n", "<space>ca", vim.lsp.buf.code_action, { desc = "LSP code action" })
-  map("n", "<space>wa", vim.lsp.buf.add_workspace_folder, { desc = "add workspace folder" })
-  map("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
-  map("n", "<space>wl", function()
-    vim.print(vim.lsp.buf.list_workspace_folders())
-  end, { desc = "list workspace folder" })
-
-  -- Set some key bindings conditional on server capabilities
-  if client.server_capabilities.documentFormattingProvider then
-    map("n", "<space>f", vim.lsp.buf.format, { desc = "format code" })
-  end
-
-  api.nvim_create_autocmd("CursorHold", {
-    buffer = bufnr,
-    callback = function()
-      local float_opts = {
-        focusable = false,
-        close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-        border = "rounded",
-        source = "always", -- show source in diagnostic popup window
-        prefix = " ",
-      }
-
-      if not vim.b.diagnostics_pos then
-        vim.b.diagnostics_pos = { nil, nil }
-      end
-
-      local cursor_pos = api.nvim_win_get_cursor(0)
-      if (cursor_pos[1] ~= vim.b.diagnostics_pos[1] or cursor_pos[2] ~= vim.b.diagnostics_pos[2])
-          and #diagnostic.get() > 0
-      then
-        diagnostic.open_float(nil, float_opts)
-      end
-
-      vim.b.diagnostics_pos = cursor_pos
-    end,
-  })
-
-  -- The blow command will highlight the current variable and its usages in the buffer.
-  if client.server_capabilities.documentHighlightProvider then
-    vim.cmd([[
-      hi! link LspReferenceRead Visual
-      hi! link LspReferenceText Visual
-      hi! link LspReferenceWrite Visual
-    ]])
-
-    local gid = api.nvim_create_augroup("lsp_document_highlight", { clear = true })
-    api.nvim_create_autocmd("CursorHold" , {
-      group = gid,
-      buffer = bufnr,
-      callback = function ()
-        lsp.buf.document_highlight()
-      end
-    })
-
-    api.nvim_create_autocmd("CursorMoved" , {
-      group = gid,
-      buffer = bufnr,
-      callback = function ()
-        lsp.buf.clear_references()
-      end
-    })
-  end
-
-  if vim.g.logging_level == "debug" then
-    local msg = string.format("Language server %s started!", client.name)
-    vim.notify(msg, vim.log.levels.DEBUG, { title = "Nvim-config" })
-  end
-end
-
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
--- required by nvim-ufo
-capabilities.textDocument.foldingRange = {
-    dynamicRegistration = false,
-    lineFoldingOnly = true
-}
-
-local lspconfig = require("lspconfig")
-
-if utils.executable("pylsp") then
-  local venv_path = os.getenv('VIRTUAL_ENV')
-  local py_path = nil
-  -- decide which python executable to use for mypy
-  if venv_path ~= nil then
-    py_path = venv_path .. "/bin/python3"
+-- ── Capabilities ──────────────────────────────────────────────────────────────
+-- Prefer lsp_utils if present (new API), otherwise fall back to cmp_nvim_lsp.
+local ok_utils, lsp_utils = pcall(require, "lsp_utils")
+local capabilities
+if ok_utils and lsp_utils.get_default_capabilities then
+  capabilities = lsp_utils.get_default_capabilities()
+else
+  local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+  if ok_cmp and cmp_lsp.default_capabilities then
+    capabilities = cmp_lsp.default_capabilities()
   else
-    py_path = vim.g.python3_host_prog
+    capabilities = vim.lsp.protocol.make_client_capabilities()
   end
-
-  lspconfig.pylsp.setup {
-    on_attach = custom_attach,
-    settings = {
-      pylsp = {
-        plugins = {
-          -- formatter options
-          black = { enabled = true },
-          autopep8 = { enabled = false },
-          yapf = { enabled = false },
-          -- linter options
-          pylint = { enabled = true, executable = "pylint" },
-          ruff = { enabled = false },
-          pyflakes = { enabled = false },
-          pycodestyle = { enabled = false },
-          -- type checker
-          pylsp_mypy = {
-            enabled = true,
-            overrides = { "--python-executable", py_path, true },
-            report_progress = true,
-            live_mode = false
-          },
-          -- auto-completion options
-          jedi_completion = { fuzzy = true },
-          -- import sorting
-          isort = { enabled = true },
-        },
-      },
-    },
-    flags = {
-      debounce_text_changes = 200,
-    },
-    capabilities = capabilities,
-  }
-else
-  vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
 
--- if utils.executable('pyright') then
---   lspconfig.pyright.setup{
---     on_attach = custom_attach,
---     capabilities = capabilities
---   }
--- else
---   vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Nvim-config'})
--- end
-
-if utils.executable("ltex-ls") then
-  lspconfig.ltex.setup {
-    on_attach = custom_attach,
-    cmd = { '/home/patrick/.local/share/ltex-ls/ltex-ls-16.0.0/bin/ltex-ls' }, -- add this if you install ltex-ls yourself
-    --cmd = { "ltex-ls" },
-    filetypes = { "text", "plaintex", "tex", "markdown" },
-    settings = {
-      ltex = {
-        language = "en-US",
-			  diagnosticSeverity = "information",
-			  setenceCacheSize = 2000,
-  			additionalRules = {
-  				enablePickyRules = true,
-  				motherTongue = "en",
-  			},
-  			trace = { server = "verbose" },
-        --disabledRules = {"en-US" : ["EN_UNPAIRED_BRACKETS"]},
-      },
-
-    },
-    flags = { debounce_text_changes = 300 },
+-- nvim-ufo folding capability (kept from old code)
+capabilities.textDocument = capabilities.textDocument or {}
+capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true,
 }
-end
 
-if utils.executable("clangd") then
-  lspconfig.clangd.setup {
-    on_attach = custom_attach,
-    capabilities = capabilities,
-    filetypes = { "c", "cpp", "cc" },
-    flags = {
-      debounce_text_changes = 500,
-    },
-  }
-end
+-- ── UI: reference highlights & diagnostics/signs/hover ────────────────────────
+-- Nice highlight for LSP references (from old code)
+vim.cmd([[
+  hi! link LspReferenceRead  Visual
+  hi! link LspReferenceText  Visual
+  hi! link LspReferenceWrite Visual
+]])
 
--- set up vim-language-server
-if utils.executable("vim-language-server") then
-  lspconfig.vimls.setup {
-    on_attach = custom_attach,
-    flags = {
-      debounce_text_changes = 500,
-    },
-    capabilities = capabilities,
-  }
-else
-  vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
-end
+-- Change diagnostic signs (from old code)
+vim.fn.sign_define("DiagnosticSignError", { text = "🆇", texthl = "DiagnosticSignError" })
+vim.fn.sign_define("DiagnosticSignWarn",  { text = "⚠️",  texthl = "DiagnosticSignWarn" })
+vim.fn.sign_define("DiagnosticSignInfo",  { text = "ℹ️",  texthl = "DiagnosticSignInfo" })
+vim.fn.sign_define("DiagnosticSignHint",  { text = "",  texthl = "DiagnosticSignHint" })
 
--- set up bash-language-server
-if utils.executable("bash-language-server") then
-  lspconfig.bashls.setup {
-    on_attach = custom_attach,
-    capabilities = capabilities,
-  }
-end
-
-if utils.executable("lua-language-server") then
-  -- settings for lua-language-server can be found on https://github.com/LuaLS/lua-language-server/wiki/Settings .
-  lspconfig.lua_ls.setup {
-    on_attach = custom_attach,
-    settings = {
-      Lua = {
-        runtime = {
-          -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-          version = "LuaJIT",
-        },
-      },
-    },
-    capabilities = capabilities,
-  }
-end
-
--- Change diagnostic signs.
-fn.sign_define("DiagnosticSignError", { text = '🆇', texthl = "DiagnosticSignError" })
-fn.sign_define("DiagnosticSignWarn", { text = '⚠️', texthl = "DiagnosticSignWarn" })
-fn.sign_define("DiagnosticSignInfo", { text = 'ℹ️', texthl = "DiagnosticSignInfo" })
-fn.sign_define("DiagnosticSignHint", { text = '', texthl = "DiagnosticSignHint" })
-
--- global config for diagnostic
-diagnostic.config {
+-- Global diagnostic behavior (from old code)
+vim.diagnostic.config({
   underline = false,
   virtual_text = false,
   signs = true,
   severity_sort = true,
+})
+
+-- Global hover border (from old code). We'll keep this AND a per-K config.
+vim.lsp.handlers["textDocument/hover"] =
+  vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+
+-- ── Per-buffer keymaps & behavior on attach ───────────────────────────────────
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_buf_conf", { clear = true }),
+  nested = true,
+  desc = "Configure buffer keymaps & behavior based on LSP",
+  callback = function(event)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if not client then return end
+
+    local bufnr = event.buf
+
+    -- keymap helper
+    local function map(mode, lhs, rhs, opts)
+      opts = opts or {}
+      opts.silent = true
+      opts.buffer = bufnr
+      vim.keymap.set(mode, lhs, rhs, opts)
+    end
+
+    -- Deduping 'gd' (from new code) – keeps the clever on_list filter
+    map("n", "gd", function()
+      vim.lsp.buf.definition({
+        on_list = function(options)
+          local unique, seen = {}, {}
+          for _, item in pairs(options.items or {}) do
+            local key = (item.filename or "") .. (item.lnum or 0)
+            if not seen[key] then
+              seen[key] = true
+              table.insert(unique, item)
+            end
+          end
+          options.items = unique
+          vim.fn.setloclist(0, {}, " ", options)
+          if #options.items > 1 then
+            vim.cmd.lopen()
+          else
+            vim.cmd([[silent! lfirst]])
+          end
+        end,
+      })
+    end, { desc = "Go to definition (deduped)" })
+
+    -- Vanilla definition too (kept)
+    map("n", "<C-]>", vim.lsp.buf.definition)
+
+    -- Hover with constrained size (from new), still benefits from global rounded border
+    map("n", "K", function()
+      vim.lsp.buf.hover({
+        border = "single",
+        max_height = 20,
+        max_width  = 130,
+        close_events = { "CursorMoved", "BufLeave", "WinLeave", "LSPDetach" },
+      })
+    end, { desc = "Hover" })
+
+    map("n", "<C-k>", vim.lsp.buf.signature_help)
+    map("n", "<space>rn", vim.lsp.buf.rename,                    { desc = "Rename symbol" })
+    map("n", "<space>ca", vim.lsp.buf.code_action,               { desc = "Code action" })
+    map("n", "<space>wa", vim.lsp.buf.add_workspace_folder,      { desc = "Add workspace folder" })
+    map("n", "<space>wr", vim.lsp.buf.remove_workspace_folder,   { desc = "Remove workspace folder" })
+    map("n", "<space>wl", function() vim.print(vim.lsp.buf.list_workspace_folders()) end,
+      { desc = "List workspace folders" })
+
+    -- Prefer Pyright (or other) hover over Ruff's (from new code)
+    if client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+    end
+
+    -- Inlay hints are optional; uncomment to enable:
+    -- vim.lsp.inlay_hint.enable(true, { buffer = bufnr })
+
+    -- Document highlights (merged: new autocmds + old highlight links)
+    if client.server_capabilities.documentHighlightProvider then
+      local gid = vim.api.nvim_create_augroup("lsp_document_highlight_" .. bufnr, { clear = true })
+      vim.api.nvim_create_autocmd("CursorHold", {
+        group = gid, buffer = bufnr,
+        callback = function() vim.lsp.buf.document_highlight() end,
+      })
+      vim.api.nvim_create_autocmd("CursorMoved", {
+        group = gid, buffer = bufnr,
+        callback = function() vim.lsp.buf.clear_references() end,
+      })
+    end
+
+    if vim.g.logging_level == "debug" then
+      vim.notify(string.format("Language server %s started!", client.name),
+                 vim.log.levels.DEBUG, { title = "Nvim-config" })
+    end
+  end,
+})
+
+-- ── Global defaults for all servers (new API) ─────────────────────────────────
+vim.lsp.config("*", {
+  capabilities = capabilities,
+  flags = { debounce_text_changes = 500 },
+})
+
+
+-- ── Global defaults for all servers (already above; keep as-is) ──────────────
+-- vim.lsp.config("*", { capabilities = capabilities, flags = { debounce_text_changes = 500 } })
+
+-- Helper
+local function have(exe) return vim.fn.executable(exe) == 1 end
+
+-- ── pylsp (formatter/linter/mypy/isort; venv-aware mypy) ─────────────────────
+if have("pylsp") then
+  local venv_path = os.getenv("VIRTUAL_ENV")
+  local py_path = venv_path and (venv_path .. "/bin/python3") or vim.g.python3_host_prog
+  vim.lsp.config("pylsp", {
+    cmd = { "pylsp" },
+    settings = {
+      pylsp = {
+        plugins = {
+          black = { enabled = true },
+          autopep8 = { enabled = false },
+          yapf = { enabled = false },
+          pylint = { enabled = true, executable = "pylint" },
+          ruff = { enabled = false },
+          pyflakes = { enabled = false },
+          pycodestyle = { enabled = false },
+          pylsp_mypy = {
+            enabled = true,
+            overrides = { "--python-executable", py_path, true },
+            report_progress = true,
+            live_mode = false,
+          },
+          jedi_completion = { fuzzy = true },
+          isort = { enabled = true },
+        },
+      },
+    },
+    flags = { debounce_text_changes = 200 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("pylsp")
+else
+  vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+end
+
+-- ── ltex-ls (grammar/spell) ──────────────────────────────────────────────────
+if have("ltex-ls") then
+  vim.lsp.config("ltex", {
+    cmd = { "ltex-ls" }, -- set absolute path here if you use a custom install
+    filetypes = { "text", "plaintex", "tex", "markdown" },
+    settings = {
+      ltex = {
+        language = "en-US",
+        diagnosticSeverity = "information",
+        setenceCacheSize = 2000,
+        additionalRules = { enablePickyRules = true, motherTongue = "en" },
+        trace = { server = "verbose" },
+      },
+    },
+    flags = { debounce_text_changes = 300 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("ltex")
+end
+
+-- ── clangd ───────────────────────────────────────────────────────────────────
+if have("clangd") then
+  vim.lsp.config("clangd", {
+    cmd = { "clangd" },
+    filetypes = { "c", "cpp", "cc" },
+    flags = { debounce_text_changes = 500 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("clangd")
+end
+
+-- ── vim-language-server ──────────────────────────────────────────────────────
+if have("vim-language-server") then
+  vim.lsp.config("vimls", {
+    cmd = { "vim-language-server", "--stdio" },
+    flags = { debounce_text_changes = 500 },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("vimls")
+else
+  vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+end
+
+-- ── bash-language-server ─────────────────────────────────────────────────────
+if have("bash-language-server") then
+  vim.lsp.config("bashls", {
+    cmd = { "bash-language-server", "start" },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("bashls")
+end
+
+-- ── lua-language-server ──────────────────────────────────────────────────────
+if have("lua-language-server") then
+  vim.lsp.config("lua_ls", {
+    cmd = { "lua-language-server" },
+    settings = { Lua = { runtime = { version = "LuaJIT" } } },
+    capabilities = capabilities,
+  })
+  vim.lsp.enable("lua_ls")
+end
+
+-- ── Simple servers (enable if binaries exist) ────────────────────────────────
+-- Register minimal configs so enable() knows how to start them.
+vim.lsp.config("pyright", { cmd = { "pyright-langserver", "--stdio" }, capabilities = capabilities })
+vim.lsp.config("yamlls",  { cmd = { "yaml-language-server", "--stdio" }, capabilities = capabilities })
+vim.lsp.config("ruff",    { cmd = { "ruff", "server" }, capabilities = capabilities })
+
+local simple = {
+  pyright = "pyright-langserver",
+  yamlls  = "yaml-language-server",
+  ruff    = "ruff",
 }
 
--- lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {
---   underline = false,
---   virtual_text = false,
---   signs = true,
---   update_in_insert = false,
--- })
-
--- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
-lsp.handlers["textDocument/hover"] = lsp.with(vim.lsp.handlers.hover, {
-  border = "rounded",
-})
+for name, exe in pairs(simple) do
+  if have(exe) then
+    vim.lsp.enable(name)
+  else
+    vim.notify(
+      ("Executable '%s' for server '%s' not found! Server will not be enabled"):format(exe, name),
+      vim.log.levels.WARN, { title = "Nvim-config" }
+    )
+  end
+end
