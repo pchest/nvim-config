@@ -254,27 +254,33 @@ if executable('latex')
     " let g:vimtex_view_method = "skim"
     let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
     let g:vimtex_view_general_options = '-r @line @pdf @tex'
+    let g:vimtex_view_method = 'skim'
+    let g:vimtex_view_skim_activate = 1
+    let g:vimtex_view_skim_sync = 1
 
-    augroup vimtex_mac
-      autocmd!
-      autocmd User VimtexEventCompileSuccess call UpdateSkim()
-    augroup END
+    " augroup vimtex_mac
+    "   autocmd!
+    "   autocmd User VimtexEventCompileSuccess call UpdateSkim()
+    " augroup END
 
     " The following code is adapted from https://gist.github.com/skulumani/7ea00478c63193a832a6d3f2e661a536.
-    function! UpdateSkim() abort
-      let l:out = b:vimtex.out()
-      let l:src_file_path = expand('%:p')
-      let l:cmd = [g:vimtex_view_general_viewer, '-r']
+    " function! UpdateSkim() abort
+    "   let l:out = b:vimtex.out()
+    "   let l:src_file_path = expand('%:p')
+    "   let l:cmd = [g:vimtex_view_general_viewer, '-r']
 
-      if !empty(system('pgrep Skim'))
-        call extend(l:cmd, ['-g'])
-      endif
+    "   if !empty(system('pgrep Skim'))
+    "     call extend(l:cmd, ['-g'])
+    "   endif
 
-      call jobstart(l:cmd + [line('.'), l:out, l:src_file_path])
-    endfunction
+    "   call jobstart(l:cmd + [line('.'), l:out, l:src_file_path])
+    " endfunction
   endif
+
+  if g:is_linux
     let g:vimtex_view_general_viewer = 'zathura'
     let g:coc_filetype_map = {'tex': 'latex'}
+  endif
 endif
 
 """"""""""""""""""""""""""""vim-matchup settings"""""""""""""""""""""""""""""
