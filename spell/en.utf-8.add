@@ -492,7 +492,6 @@ Presse
 AFP
 Xinhua
 centralities
-<<<<<<< HEAD
 OSF
 Downsian
 CCP
@@ -546,3 +545,9 @@ FastText
 GloVe
 keyclust
 Inclusivity
+unix
+GCP
+Kubernetes
+pubsub
+Luarocks
+luarocks
