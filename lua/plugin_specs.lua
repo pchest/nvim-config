@@ -47,7 +47,16 @@ local plugin_specs = {
     end,
   },
   { 'junegunn/limelight.vim'},
-  { 'junegunn/goyo.vim' },
+  { 'junegunn/goyo.vim',
+    keys = {
+        {
+          "<leader>go",
+          "<cmd>Goyo<cr>",
+          desc = "Document in Goyo mode",
+          mode = "n"
+        }
+      }
+    },
   { 'francoiscabrol/ranger.vim',
     keys = {
       {
@@ -641,18 +650,23 @@ local plugin_specs = {
     opts = {},
   },
   {
-  "olimorris/codecompanion.nvim",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-treesitter/nvim-treesitter",
-    "hrsh7th/nvim-cmp", -- Optional: For using slash commands and variables in the chat buffer
-    "nvim-telescope/telescope.nvim", -- Optional: For using slash commands
-    { "MeanderingProgrammer/render-markdown.nvim", ft = { "markdown", "codecompanion" } }, -- Optional: For prettier markdown rendering
-    { "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves `vim.ui.select`
-  },
-  config = true
-},
-  --{
+   "olimorris/codecompanion.nvim",
+   dependencies = {
+     "nvim-lua/plenary.nvim",
+     "nvim-treesitter/nvim-treesitter",
+     "hrsh7th/nvim-cmp",
+     "nvim-telescope/telescope.nvim",
+     { "MeanderingProgrammer/render-markdown.nvim", ft = { "markdown", "codecompanion" } },
+     { "stevearc/dressing.nvim", opts = {} },
+   },
+   opts = {
+     keymaps = {
+       close = "<C-w>q",
+     },
+    },
+    config = true,
+   },
+--{
   --  "CopilotC-Nvim/CopilotChat.nvim",
   --  branch = "canary",
   --  dependencies = {
