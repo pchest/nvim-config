@@ -190,6 +190,8 @@ keymap.set("n", "<leader>js", ":%!jq .<CR>", { silent = true, desc = "prettify j
 -- Nvim-R
 keymap.set("i", "<leader>r;", " |><CR>", { silent = true, noremap = true, desc = "insert R pipe" })
 keymap.set("n", "<leader>r;", "a |><CR><Esc>", { silent = true, noremap = true, desc = "insert R pipe" })
+keymap.set("i", "<leader>rx", " <- ", { silent = true, noremap = true, desc = "insert R assignment arrow" })
+keymap.set("n", "<leader>rx", "a <- <Esc>", { silent = true, noremap = true, desc = "insert R assignment arrow" })
 
 -- Text objects for URL
 keymap.set({ "x", "o" }, "iu", "<cmd>call text_obj#URL()<cr>", { desc = "URL text object" })
