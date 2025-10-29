@@ -3,7 +3,8 @@ local uv = vim.uv
 
 -- Save key strokes (now we do not need to press shift to enter command mode).
 keymap.set({ "n", "x" }, ";", ":")
-
+keymap.set("n", "<leader>r9", ":QuartoPreview<CR>", { desc = "Quarto Preview" })
+keymap.set("n", "<leader>r0", ":QuartoClosePreview<CR>", { desc = "Quarto Close Preview" })
 -- Turn the word under cursor to upper case
 keymap.set("i", "<c-u>", "<Esc>viwUea")
 
@@ -22,6 +23,9 @@ keymap.set("n", "<leader>q", "<cmd>x<cr>", { silent = true, desc = "quit current
 
 -- Quit all opened buffers
 keymap.set("n", "<leader>Q", "<cmd>qa!<cr>", { silent = true, desc = "quit nvim" })
+
+-- Wrap lines toggle
+keymap.set("n", "<leader>sw", ":set wrap<CR>", { desc = "set wrap" })
 
 -- Close location list or quickfix list if they are present, see https://superuser.com/q/355325/736190
 keymap.set("n", [[\x]], "<cmd>windo lclose <bar> cclose <cr>", {
