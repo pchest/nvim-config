@@ -609,17 +609,17 @@ local plugin_specs = {
 --    end
 --  },
   --{ "R-nvim/cmp-r" },
-  { "R-nvim/cmp-r",
-  config = function()
-    local ok_cmp, cmp = pcall(require, "cmp")
-    if not ok_cmp then return end
-    -- prepend cmp_r for R filetypes without overwriting your global sources
-    local base = cmp.get_config().sources or {}
-    cmp.setup.filetype({ "r", "rmd", "rnoweb", "qmd" }, {
-      sources = cmp.config.sources({ { name = "cmp_r" } }, base),
-    })
-  end,
-},
+--  { "R-nvim/cmp-r",
+--  config = function()
+--    local ok_cmp, cmp = pcall(require, "cmp")
+--    if not ok_cmp then return end
+--    -- prepend cmp_r for R filetypes without overwriting your global sources
+--    local base = cmp.get_config().sources or {}
+--    cmp.setup.filetype({ "r", "rmd", "rnoweb", "qmd" }, {
+--      sources = cmp.config.sources({ { name = "cmp_r" } }, base),
+--    })
+--  end,
+--},
 
   --{
   --  "hrsh7th/nvim-cmp",
