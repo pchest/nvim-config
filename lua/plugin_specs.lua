@@ -36,6 +36,7 @@ local plugin_specs = {
   --    require("config.nvim-cmp")
   --  end,
   --},
+  { 'luk400/vim-jukit' },
   {
     "hrsh7th/nvim-cmp",
     name = "nvim-cmp",
