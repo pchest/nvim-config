@@ -7,3 +7,4 @@ en.utf-8.add.spl
 lazy-lock.json
 lua/config/.RData
 lua/config/.Rhistory
+.ipynb_checkpoints
