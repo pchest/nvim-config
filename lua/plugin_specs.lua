@@ -36,7 +36,16 @@ local plugin_specs = {
   --    require("config.nvim-cmp")
   --  end,
   --},
-  { 'luk400/vim-jukit' },
+  { 'luk400/vim-jukit',
+    ft = { 'python', 'jupyter' },
+  },
+  --{
+  --  "kiyoon/jupynium.nvim",
+  --  build = "pip3 install --user .",
+  --  -- build = "uv pip install . --python=$HOME/.virtualenvs/jupynium/bin/python",
+  --  -- build = "conda run --no-capture-output -n jupynium pip install .",
+  --},
+  --"stevearc/dressing.nvim", -- optional, UI for :JupyniumKernelSelect
   {
     "hrsh7th/nvim-cmp",
     name = "nvim-cmp",

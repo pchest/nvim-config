@@ -5,6 +5,7 @@ local uv = vim.uv
 keymap.set({ "n", "x" }, ";", ":")
 keymap.set("n", "<leader>r9", ":QuartoPreview<CR>", { desc = "Quarto Preview" })
 keymap.set("n", "<leader>r0", ":QuartoClosePreview<CR>", { desc = "Quarto Close Preview" })
+
 -- Turn the word under cursor to upper case
 keymap.set("i", "<c-u>", "<Esc>viwUea")
 
@@ -280,3 +281,188 @@ keymap.set("n", "<Esc>", function()
 end, {
   desc = "close floating win",
 })
+
+-- add vim-jukit mappings
+
+-- vim-jukit
+
+keymap.set("n", "<leader>os", "<cmd>call jukit#splits#output()<cr>", {
+  silent = true,
+  desc = "jukit: open output window (run shell cmd)",
+})
+
+keymap.set("n", "<leader>ts", "<cmd>call jukit#splits#term()<cr>", {
+  silent = true,
+  desc = "jukit: open output window (no cmd)",
+})
+
+keymap.set("n", "<leader>hs", "<cmd>call jukit#splits#history()<cr>", {
+  silent = true,
+  desc = "jukit: open output-history window",
+})
+
+keymap.set("n", "<leader>ohs", "<cmd>call jukit#splits#output_and_history()<cr>", {
+  silent = true,
+  desc = "jukit: open output + history",
+})
+
+keymap.set("n", "<leader>hd", "<cmd>call jukit#splits#close_history()<cr>", {
+  silent = true,
+  desc = "jukit: close history window",
+})
+
+keymap.set("n", "<leader>od", "<cmd>call jukit#splits#close_output_split()<cr>", {
+  silent = true,
+  desc = "jukit: close output window",
+})
+
+keymap.set("n", "<leader>ohd", "<cmd>call jukit#splits#close_output_and_history(1)<cr>", {
+  silent = true,
+  desc = "jukit: close output + history (confirm)",
+})
+
+keymap.set("n", "<leader>so", "<cmd>call jukit#splits#show_last_cell_output(1)<cr>", {
+  silent = true,
+  desc = "jukit: show current cell output (reload if same cell)",
+})
+
+keymap.set("n", "<leader>j", "<cmd>call jukit#splits#out_hist_scroll(1)<cr>", {
+  silent = true,
+  desc = "jukit: scroll history down",
+})
+
+keymap.set("n", "<leader>k", "<cmd>call jukit#splits#out_hist_scroll(0)<cr>", {
+  silent = true,
+  desc = "jukit: scroll history up",
+})
+
+keymap.set("n", "<leader>ah", "<cmd>call jukit#splits#toggle_auto_hist()<cr>", {
+  silent = true,
+  desc = "jukit: toggle auto history on CursorHold",
+})
+
+keymap.set("n", "<leader>sl", "<cmd>call jukit#layouts#set_layout()<cr>", {
+  silent = true,
+  desc = "jukit: apply layout to current splits",
+})
+
+keymap.set("n", "<leader><space>", "<cmd>call jukit#send#section(0)<cr>", {
+  silent = true,
+  desc = "jukit: send current cell to output",
+})
+
+keymap.set("n", "<cr>", "<cmd>call jukit#send#line()<cr>", {
+  silent = true,
+  desc = "jukit: send current line",
+})
+
+keymap.set("x", "<cr>", ":<C-U>call jukit#send#selection()<cr>", {
+  silent = true,
+  desc = "jukit: send visual selection",
+})
+
+keymap.set("n", "<leader>cc", "<cmd>call jukit#send#until_current_section()<cr>", {
+  silent = true,
+  desc = "jukit: run all cells until current",
+})
+
+keymap.set("n", "<leader>all", "<cmd>call jukit#send#all()<cr>", {
+  silent = true,
+  desc = "jukit: run all cells",
+})
+
+keymap.set("n", "<leader>co", "<cmd>call jukit#cells#create_below(0)<cr>", {
+  silent = true,
+  desc = "jukit: create code cell below",
+})
+
+keymap.set("n", "<leader>cO", "<cmd>call jukit#cells#create_above(0)<cr>", {
+  silent = true,
+  desc = "jukit: create code cell above",
+})
+
+keymap.set("n", "<leader>ct", "<cmd>call jukit#cells#create_below(1)<cr>", {
+  silent = true,
+  desc = "jukit: create text cell below",
+})
+
+keymap.set("n", "<leader>cT", "<cmd>call jukit#cells#create_above(1)<cr>", {
+  silent = true,
+  desc = "jukit: create text cell above",
+})
+
+keymap.set("n", "<leader>cd", "<cmd>call jukit#cells#delete()<cr>", {
+  silent = true,
+  desc = "jukit: delete current cell",
+})
+
+keymap.set("n", "<leader>cs", "<cmd>call jukit#cells#split()<cr>", {
+  silent = true,
+  desc = "jukit: split current cell",
+})
+
+keymap.set("n", "<leader>cM", "<cmd>call jukit#cells#merge_above()<cr>", {
+  silent = true,
+  desc = "jukit: merge cell with above",
+})
+
+keymap.set("n", "<leader>cm", "<cmd>call jukit#cells#merge_below()<cr>", {
+  silent = true,
+  desc = "jukit: merge cell with below",
+})
+
+keymap.set("n", "<leader>ck", "<cmd>call jukit#cells#move_up()<cr>", {
+  silent = true,
+  desc = "jukit: move cell up",
+})
+
+keymap.set("n", "<leader>cj", "<cmd>call jukit#cells#move_down()<cr>", {
+  silent = true,
+  desc = "jukit: move cell down",
+})
+
+keymap.set("n", "<leader>J", "<cmd>call jukit#cells#jump_to_next_cell()<cr>", {
+  silent = true,
+  desc = "jukit: jump to next cell",
+})
+
+keymap.set("n", "<leader>K", "<cmd>call jukit#cells#jump_to_previous_cell()<cr>", {
+  silent = true,
+  desc = "jukit: jump to previous cell",
+})
+
+keymap.set("n", "<leader>ddo", "<cmd>call jukit#cells#delete_outputs(0)<cr>", {
+  silent = true,
+  desc = "jukit: delete outputs for current cell",
+})
+
+keymap.set("n", "<leader>dda", "<cmd>call jukit#cells#delete_outputs(1)<cr>", {
+  silent = true,
+  desc = "jukit: delete outputs for all cells",
+})
+
+keymap.set("n", "<leader>np", "<cmd>call jukit#convert#notebook_convert('jupyter-notebook')<cr>", {
+  silent = true,
+  desc = "jukit: convert ipynb <-> script (open in jupyter-notebook)",
+})
+
+keymap.set("n", "<leader>ht", "<cmd>call jukit#convert#save_nb_to_file(0,1,'html')<cr>", {
+  silent = true,
+  desc = "jukit: export html (no rerun, open after)",
+})
+
+keymap.set("n", "<leader>rht", "<cmd>call jukit#convert#save_nb_to_file(1,1,'html')<cr>", {
+  silent = true,
+  desc = "jukit: export html (rerun all, open after)",
+})
+
+keymap.set("n", "<leader>pd", "<cmd>call jukit#convert#save_nb_to_file(0,1,'pdf')<cr>", {
+  silent = true,
+  desc = "jukit: export pdf (no rerun, open after)",
+})
+
+keymap.set("n", "<leader>rpd", "<cmd>call jukit#convert#save_nb_to_file(1,1,'pdf')<cr>", {
+  silent = true,
+  desc = "jukit: export pdf (rerun all, open after)",
+})
+
