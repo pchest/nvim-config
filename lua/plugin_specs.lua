@@ -36,6 +36,16 @@ local plugin_specs = {
   --    require("config.nvim-cmp")
   --  end,
   --},
+  { 'luk400/vim-jukit',
+    ft = { 'python', 'jupyter' },
+  },
+  --{
+  --  "kiyoon/jupynium.nvim",
+  --  build = "pip3 install --user .",
+  --  -- build = "uv pip install . --python=$HOME/.virtualenvs/jupynium/bin/python",
+  --  -- build = "conda run --no-capture-output -n jupynium pip install .",
+  --},
+  --"stevearc/dressing.nvim", -- optional, UI for :JupyniumKernelSelect
   {
     "hrsh7th/nvim-cmp",
     name = "nvim-cmp",
@@ -129,6 +139,16 @@ local plugin_specs = {
   --    },
   --  },
   --},
+  {
+    "kylechui/nvim-surround",
+    version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+        require("nvim-surround").setup({
+            -- Configuration here, or leave empty to use defaults
+        })
+    end
+  },
   -- {
   --   "saghen/blink.cmp",
   --   -- optional: provides snippets for the snippet source
@@ -147,7 +167,16 @@ local plugin_specs = {
     end,
   },
   { 'junegunn/limelight.vim'},
-  { 'junegunn/goyo.vim' },
+  { 'junegunn/goyo.vim',
+    keys = {
+        {
+          "<leader>go",
+          "<cmd>Goyo<cr>",
+          desc = "Document in Goyo mode",
+          mode = "n"
+        }
+      }
+    },
   { 'francoiscabrol/ranger.vim',
     keys = {
       {
@@ -667,17 +696,17 @@ local plugin_specs = {
 --    end
 --  },
   --{ "R-nvim/cmp-r" },
-  { "R-nvim/cmp-r",
-  config = function()
-    local ok_cmp, cmp = pcall(require, "cmp")
-    if not ok_cmp then return end
-    -- prepend cmp_r for R filetypes without overwriting your global sources
-    local base = cmp.get_config().sources or {}
-    cmp.setup.filetype({ "r", "rmd", "rnoweb", "qmd" }, {
-      sources = cmp.config.sources({ { name = "cmp_r" } }, base),
-    })
-  end,
-},
+--  { "R-nvim/cmp-r",
+--  config = function()
+--    local ok_cmp, cmp = pcall(require, "cmp")
+--    if not ok_cmp then return end
+--    -- prepend cmp_r for R filetypes without overwriting your global sources
+--    local base = cmp.get_config().sources or {}
+--    cmp.setup.filetype({ "r", "rmd", "rnoweb", "qmd" }, {
+--      sources = cmp.config.sources({ { name = "cmp_r" } }, base),
+--    })
+--  end,
+--},
 
   --{
   --  "hrsh7th/nvim-cmp",
@@ -762,6 +791,24 @@ local plugin_specs = {
       },
     },
   },
+  --{
+  -- "olimorris/codecompanion.nvim",
+  -- dependencies = {
+  --   "nvim-lua/plenary.nvim",
+  --   "nvim-treesitter/nvim-treesitter",
+  --   "hrsh7th/nvim-cmp",
+  --   "nvim-telescope/telescope.nvim",
+  --   { "MeanderingProgrammer/render-markdown.nvim", ft = { "markdown", "codecompanion" } },
+  --   { "stevearc/dressing.nvim", opts = {} },
+  -- },
+  -- opts = {
+  --   keymaps = {
+  --     close = "<C-w>q",
+  --   },
+  --  },
+  --  config = true,
+  -- },
+--{
   { 'github/copilot.vim' },
   --{
   --  "CopilotC-Nvim/CopilotChat.nvim",
