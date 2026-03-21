@@ -35,7 +35,7 @@ require("diagnostic-conf")
 
 -- colorscheme settings
 
-vim.g.python3_host_prog = "/home/patrick/anaconda3/bin/python3"
+vim.g.python3_host_prog = "~/anaconda3/bin/python3"
 --vim.g.python3_host_prog = "/home/patrick/.pyenv/versions/3.12.10/bin/python3.12"
 
 local color_scheme = require("colorschemes")
