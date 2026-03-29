@@ -28,6 +28,7 @@ local plugin_specs = {
   { "hrsh7th/cmp-omni", lazy = true },
   { "hrsh7th/cmp-cmdline", lazy = true },
   { "quangnguyen30192/cmp-nvim-ultisnips", lazy = true },
+  { "karb94/neoscroll.nvim", opts = {}, lazy = true },
   --{
   --  "hrsh7th/nvim-cmp",
   --  name = "nvim-cmp",
