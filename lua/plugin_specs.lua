@@ -125,15 +125,29 @@ local plugin_specs = {
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    lazy = true,
+    branch = "master",
+    lazy = false,
     build = ":TSUpdate",
-    config = function ()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml", "python", "vim", "vimdoc", "lua", "luadoc" },
-        --disable = {"latex", "tex"},
+    config = function()
+      vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site")
+  
+      require("nvim-treesitter").setup({
+        ensure_installed = {
+          "markdown",
+          "markdown_inline",
+          "r",
+          "rnoweb",
+          "yaml",
+          "python",
+          "vim",
+          "vimdoc",
+          "lua",
+          "luadoc",
+        },
+        -- disable = { "latex", "tex" },
         highlight = { enable = true },
       })
-    end
+    end,
   },
   -- Python-related text object
   { "jeetsukumaran/vim-pythonsense", ft = { "python" } },
