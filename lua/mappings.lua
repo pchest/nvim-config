@@ -6,6 +6,17 @@ keymap.set({ "n", "x" }, ";", ":")
 keymap.set("n", "<leader>r9", ":QuartoPreview<CR>", { desc = "Quarto Preview" })
 keymap.set("n", "<leader>r0", ":QuartoClosePreview<CR>", { desc = "Quarto Close Preview" })
 
+-- R code blocks in quarto markdown files
+
+keymap.set("n", "<leader>ir", "i```{r}<CR><CR>```<Esc>k", { desc = "Insert R Block" })
+keymap.set("i", "<leader>ir", "```{r}<CR><CR>```<Esc>k", { desc = "Insert R Block" })
+
+-- Python blocks in quarto markdown files
+keymap.set("n", "<leader>iy", "i```{python}<CR><CR>```<Esc>k", { desc = "Insert python Block" })
+keymap.set("i", "<leader>iy", "```{python}<CR><CR>```<Esc>k", { desc = "Insert python Block" })
+
+
+
 -- Turn the word under cursor to upper case
 keymap.set("i", "<c-u>", "<Esc>viwUea")
 
