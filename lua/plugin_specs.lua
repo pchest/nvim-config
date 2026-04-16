@@ -406,7 +406,10 @@ local plugin_specs = {
     dependencies = {
       "honza/vim-snippets",
     },
-    event = "InsertEnter",
+    init = function()
+      -- Set your trigger keys
+      vim.g.UltiSnipsExpandTrigger = '<c-k>'
+    end,
   },
 
   -- Automatic insertion and deletion of a pair of characters
