@@ -125,7 +125,7 @@ local plugin_specs = {
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
     lazy = false,
     build = ":TSUpdate",
     config = function()
@@ -166,6 +166,7 @@ local plugin_specs = {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     event = "VeryLazy",
+    enabled = false,
     branch = "master",
     config = function()
       require("config.treesitter-textobjects")
