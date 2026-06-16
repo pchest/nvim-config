@@ -257,7 +257,7 @@ local plugin_specs = {
     "MeanderingProgrammer/render-markdown.nvim",
     main = "render-markdown",
     opts = {},
-    ft = { "markdown" },
+    ft = { "markdown", "codecompanion" },
   },
   -- A list of colorscheme plugin you may want to try. Find what suits you.
   { "navarasu/onedark.nvim", lazy = true },
@@ -731,6 +731,15 @@ local plugin_specs = {
         -- Load luvit types when the `vim.uv` word is found
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       },
+    },
+  },
+  {
+    "olimorris/codecompanion.nvim",
+    version = "^19.0.0",
+    opts = {},
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
     },
   },
   --{
