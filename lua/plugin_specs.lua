@@ -736,7 +736,9 @@ local plugin_specs = {
   {
     "olimorris/codecompanion.nvim",
     version = "^19.0.0",
-    opts = {},
+    config = function()
+      require("config.codecompanion")
+    end,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
