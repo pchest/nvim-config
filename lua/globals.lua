@@ -57,3 +57,8 @@ vim.g.loaded_sql_completion = 1
 
 -- control how to show health check window
 vim.g.health = { style = nil }
+
+-- On macOS, bypass npx for copilot.vim to avoid interactive install prompts in non-TTY subprocesses
+if vim.g.is_mac then
+  vim.g.copilot_npx_command = 0
+end
