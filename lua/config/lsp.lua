@@ -45,9 +45,13 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
--- Global hover border (from old code). We'll keep this AND a per-K config.
-vim.lsp.handlers["textDocument/hover"] =
-  vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+-- Global hover border
+vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+  config = vim.tbl_deep_extend("force", config or {}, {
+    border = "rounded",
+  })
+  return vim.lsp.handlers.hover(err, result, ctx, config)
+end
 
 -- ── Per-buffer keymaps & behavior on attach ───────────────────────────────────
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -197,7 +201,7 @@ if have("ltex-ls") then
       ltex = {
         language = "en-US",
         diagnosticSeverity = "information",
-        setenceCacheSize = 2000,
+        sentenceCacheSize = 2000,
         additionalRules = { enablePickyRules = true, motherTongue = "en" },
         trace = { server = "verbose" },
       },

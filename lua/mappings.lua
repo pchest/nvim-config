@@ -15,7 +15,12 @@ keymap.set("i", "<leader>ir", "```{r}<CR><CR>```<Esc>k", { desc = "Insert R Bloc
 keymap.set("n", "<leader>iy", "i```{python}<CR><CR>```<Esc>k", { desc = "Insert python Block" })
 keymap.set("i", "<leader>iy", "```{python}<CR><CR>```<Esc>k", { desc = "Insert python Block" })
 
+-- Codecompanion 
+keymap.set("n", "<leader>ai", "<cmd>CodeCompanionChat Toggle<cr>", { silent = true, desc = "toggle codecompanion chat" })
 
+-- Remove white space characters at the end of lines
+
+keymap.set("n", "<leader>tw", ":%s/\\s\\+$//e<CR>", { desc = "remove trailing space" })
 
 -- Turn the word under cursor to upper case
 keymap.set("i", "<c-u>", "<Esc>viwUea")

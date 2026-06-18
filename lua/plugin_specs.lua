@@ -202,7 +202,7 @@ local plugin_specs = {
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
     lazy = false,
     build = ":TSUpdate",
     config = function()
@@ -243,6 +243,7 @@ local plugin_specs = {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     event = "VeryLazy",
+    enabled = false,
     branch = "master",
     config = function()
       require("config.treesitter-textobjects")
@@ -333,7 +334,7 @@ local plugin_specs = {
     "MeanderingProgrammer/render-markdown.nvim",
     main = "render-markdown",
     opts = {},
-    ft = { "markdown" },
+    ft = { "markdown", "codecompanion" },
   },
   -- A list of colorscheme plugin you may want to try. Find what suits you.
   { "navarasu/onedark.nvim", lazy = true },
@@ -807,6 +808,17 @@ local plugin_specs = {
         -- Load luvit types when the `vim.uv` word is found
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       },
+    },
+  },
+  {
+    "olimorris/codecompanion.nvim",
+    version = "^19.0.0",
+    config = function()
+      require("config.codecompanion")
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
     },
   },
   --{
