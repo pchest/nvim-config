@@ -37,9 +37,9 @@ local plugin_specs = {
   --    require("config.nvim-cmp")
   --  end,
   --},
-  { 'luk400/vim-jukit',
-    ft = { 'python', 'jupyter' },
-  },
+  --{ 'luk400/vim-jukit',
+  --  ft = { 'python', 'jupyter' },
+  --},
   --{
   --  "kiyoon/jupynium.nvim",
   --  build = "pip3 install --user .",
@@ -819,6 +819,7 @@ local plugin_specs = {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
+      "ravitemer/codecompanion-history.nvim"
     },
   },
   --{
