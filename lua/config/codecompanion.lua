@@ -59,7 +59,8 @@ require("codecompanion").setup({
             ---When chat is cleared with `gx` delete the chat from history
             delete_on_clearing_chat = false,
             ---Directory path to save the chats
-            dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
+            ---dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
+            dir_to_save = vim.fn.expand("~/Sync/codecompanion-history"),
             ---Enable detailed logging for history extension
             enable_logging = false,
 
