@@ -28,6 +28,7 @@ local plugin_specs = {
   { "hrsh7th/cmp-omni", lazy = true },
   { "hrsh7th/cmp-cmdline", lazy = true },
   { "quangnguyen30192/cmp-nvim-ultisnips", lazy = true },
+  { "karb94/neoscroll.nvim", opts = {}, lazy = true },
   --{
   --  "hrsh7th/nvim-cmp",
   --  name = "nvim-cmp",
@@ -36,9 +37,9 @@ local plugin_specs = {
   --    require("config.nvim-cmp")
   --  end,
   --},
-  { 'luk400/vim-jukit',
-    ft = { 'python', 'jupyter' },
-  },
+  --{ 'luk400/vim-jukit',
+  --  ft = { 'python', 'jupyter' },
+  --},
   --{
   --  "kiyoon/jupynium.nvim",
   --  build = "pip3 install --user .",
@@ -124,15 +125,29 @@ local plugin_specs = {
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    lazy = true,
+    branch = "main",
+    lazy = false,
     build = ":TSUpdate",
-    config = function ()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "markdown", "markdown_inline", "r", "rnoweb", "yaml", "python", "vim", "vimdoc", "lua", "luadoc" },
-        --disable = {"latex", "tex"},
+    config = function()
+      vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site")
+  
+      require("nvim-treesitter").setup({
+        ensure_installed = {
+          "markdown",
+          "markdown_inline",
+          "r",
+          "rnoweb",
+          "yaml",
+          "python",
+          "vim",
+          "vimdoc",
+          "lua",
+          "luadoc",
+        },
+        -- disable = { "latex", "tex" },
         highlight = { enable = true },
       })
-    end
+    end,
   },
   -- Python-related text object
   { "jeetsukumaran/vim-pythonsense", ft = { "python" } },
@@ -151,6 +166,7 @@ local plugin_specs = {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     event = "VeryLazy",
+    enabled = false,
     branch = "master",
     config = function()
       require("config.treesitter-textobjects")
@@ -241,7 +257,7 @@ local plugin_specs = {
     "MeanderingProgrammer/render-markdown.nvim",
     main = "render-markdown",
     opts = {},
-    ft = { "markdown" },
+    ft = { "markdown", "codecompanion" },
   },
   -- A list of colorscheme plugin you may want to try. Find what suits you.
   { "navarasu/onedark.nvim", lazy = true },
@@ -391,7 +407,10 @@ local plugin_specs = {
     dependencies = {
       "honza/vim-snippets",
     },
-    event = "InsertEnter",
+    init = function()
+      -- Set your trigger keys
+      vim.g.UltiSnipsExpandTrigger = '<c-k>'
+    end,
   },
 
   -- Automatic insertion and deletion of a pair of characters
@@ -714,6 +733,18 @@ local plugin_specs = {
       },
     },
   },
+  {
+    "olimorris/codecompanion.nvim",
+    version = "^19.0.0",
+    config = function()
+      require("config.codecompanion")
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "ravitemer/codecompanion-history.nvim"
+    },
+  },
   --{
   -- "olimorris/codecompanion.nvim",
   -- dependencies = {
@@ -748,43 +779,58 @@ local plugin_specs = {
   "LunarVim/bigfile.nvim",
   },
   {
-    "epwalsh/obsidian.nvim",
-    version = "*",  -- recommended, use latest release instead of latest commit
-    lazy = true,
-    ft = "markdown",
-    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-    -- event = {
-    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-    --   -- refer to `:h file-pattern` for more examples
-    --   "BufReadPre path/to/my-vault/*.md",
-    --   "BufNewFile path/to/my-vault/*.md",
-    -- },
-    dependencies = {
-      -- Required.
-      "nvim-lua/plenary.nvim",
-
-      -- see below for full list of optional dependencies 👇
-    },
+    "obsidian-nvim/obsidian.nvim",
+    version = "*", -- use latest release, remove to use latest commit
+    ---@module 'obsidian'
+    ---@type obsidian.config
     opts = {
+      legacy_commands = false, -- this will be removed in the next major release
       workspaces = {
         {
           name = "Obsidian",
           path = "~/Sync/New Obsidian",
-        }
-      }
-    }
+        },
+      },
+    },
   },
+  --{
+  --  "epwalsh/obsidian.nvim",
+  --  version = "*",  -- recommended, use latest release instead of latest commit
+  --  lazy = true,
+  --  ft = "markdown",
+  --  -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+  --  -- event = {
+  --  --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+  --  --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+  --  --   -- refer to `:h file-pattern` for more examples
+  --  --   "BufReadPre path/to/my-vault/*.md",
+  --  --   "BufNewFile path/to/my-vault/*.md",
+  --  -- },
+  --  dependencies = {
+  --    -- Required.
+  --    "nvim-lua/plenary.nvim",
+
+  --    -- see below for full list of optional dependencies 👇
+  --  },
+  --  opts = {
+  --    workspaces = {
+  --      {
+  --        name = "Obsidian",
+  --        path = "~/Sync/New Obsidian",
+  --      }
+  --    }
+  --  }
+  --},
   {
-  'stevearc/oil.nvim',
-  ---@module 'oil'
-  ---@type oil.SetupOpts
-  opts = {},
-  -- Optional dependencies
-  dependencies = { { "echasnovski/mini.icons", opts = {} } },
-  -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
-  -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
-  lazy = false,
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {},
+    -- Optional dependencies
+    dependencies = { { "echasnovski/mini.icons", opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+    -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+    lazy = false,
   },
   {
   "3rd/diagram.nvim",

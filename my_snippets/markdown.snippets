@@ -170,3 +170,51 @@ endsnippet
 snippet td "too long do not read" bw
 tl;dr: $1
 endsnippet
+
+snippet pb "Python Code Block" b
+\`\`\`{python}
+${1:# Your Python code here}
+\`\`\`
+endsnippet
+
+snippet rb "R Code Block" b
+\`\`\`{r}
+${1:# Your R code here}
+\`\`\`
+endsnippet
+
+snippet head "Quarto header" bA
+---
+title: $1
+format: html
+---
+endsnippet
+
+snippet lib "Library" bA
+library($0)
+endsnippet
+
+snippet swd "Set working directory" bA
+setwd($0)
+endsnippet
+
+snippet note "Notes block" b
+:::{.notes}
+${1:Your notes here}
+:::
+endsnippet
+
+snippet cols "Columns block" b
+:::{.columns}
+::: {.column width="50%"}
+${1:Left column content}
+:::
+::: {.column width="50%"}
+${2:Right column content}
+:::
+:::
+endsnippet
+
+snippet color "Colored text"
+[${1:Your text here}]{style="color:$2"}
+endsnippet
