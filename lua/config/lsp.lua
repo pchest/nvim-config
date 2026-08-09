@@ -193,23 +193,62 @@ else
 end
 
 -- ── ltex-ls (grammar/spell) ──────────────────────────────────────────────────
-if have("ltex-ls") then
-  vim.lsp.config("ltex", {
-    cmd = { "ltex-ls" }, -- set absolute path here if you use a custom install
-    filetypes = { "text", "plaintex", "tex", "markdown" },
+--if have("ltex-ls") then
+--  vim.lsp.config("ltex", {
+--    cmd = { "ltex-ls" }, -- set absolute path here if you use a custom install
+--    filetypes = { "text", "plaintex", "tex", "markdown" },
+--    settings = {
+--      ltex = {
+--        language = "en-US",
+--        diagnosticSeverity = "information",
+--        sentenceCacheSize = 2000,
+--        additionalRules = { enablePickyRules = true, motherTongue = "en" },
+--        trace = { server = "verbose" },
+--      },
+--    },
+--    flags = { debounce_text_changes = 300 },
+--    capabilities = capabilities,
+--  })
+--  vim.lsp.enable("ltex")
+--end
+
+-- ── harper-ls (grammar/spell, Rust-based) ────────────────────────────────────
+-- NOTE: default filetypes overlap with ltex above (markdown/text/tex). Running
+-- both will produce duplicate grammar/spell diagnostics — pick one, or split the
+-- filetypes between them. See comment below this block.
+if have("harper-ls") then
+  vim.lsp.config("harper", {
+    cmd = { "harper-ls", "--stdio" },
+    filetypes = { "markdown", "text", "tex", "typst" },
     settings = {
-      ltex = {
-        language = "en-US",
-        diagnosticSeverity = "information",
-        sentenceCacheSize = 2000,
-        additionalRules = { enablePickyRules = true, motherTongue = "en" },
-        trace = { server = "verbose" },
+      ["harper-ls"] = {
+        userDictPath = "",
+        fileDictPath = "",
+        linters = {
+          SpellCheck = true,
+          SpelledNumbers = false,
+          AnA = true,
+          SentenceCapitalization = true,
+          UnclosedQuotes = true,
+          WrongApostrophe = false,
+          LongSentences = true,
+          RepeatedWords = true,
+          Spaces = true,
+          CorrectNumberSuffix = true,
+        },
+        codeActions = { ForceStable = false },
+        markdown = { IgnoreLinkTitle = false },
+        diagnosticSeverity = "hint",
+        isolateEnglish = false,
+        dialect = "American",
       },
     },
     flags = { debounce_text_changes = 300 },
     capabilities = capabilities,
   })
-  vim.lsp.enable("ltex")
+  vim.lsp.enable("harper")
+else
+  vim.notify("harper-ls not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
 
 -- ── clangd ───────────────────────────────────────────────────────────────────

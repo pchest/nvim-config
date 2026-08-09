@@ -42,4 +42,6 @@ vim.g.python3_host_prog = "~/anaconda3/bin/python3"
 local color_scheme = require("colorschemes")
 
 -- Load a random colorscheme
-color_scheme.rand_colorscheme()
+-- color_scheme.rand_colorscheme()
+
+vim.cmd("colorscheme carbonfox")
