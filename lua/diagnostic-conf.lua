@@ -11,7 +11,7 @@ diagnostic.config {
       [diagnostic.severity.ERROR] = "🆇",
       [diagnostic.severity.WARN] = "⚠️",
       [diagnostic.severity.INFO] = "ℹ️",
-      [diagnostic.severity.HINT] = "",
+      [diagnostic.severity.HINT] = "💡",
     },
   },
   severity_sort = true,
