@@ -1,3 +1,12 @@
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "codecompanion",
+  callback = function()
+    vim.schedule(function()
+      vim.keymap.set("i", "<C-c>", "<Esc>", { buffer = true, noremap = true })
+    end)
+  end,
+})
+
 require("codecompanion").setup({
   adapters = {
     acp = {
