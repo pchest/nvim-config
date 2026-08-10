@@ -73,6 +73,29 @@ local function spell()
   return ""
 end
 
+--- show word count for prose filetypes (markdown and LaTeX)
+local function word_count()
+  local prose_ft = {
+    markdown = true,
+    tex = true,
+    plaintex = true,
+    latex = true,
+    rmd = true,
+  }
+
+  if not prose_ft[vim.bo.filetype] then
+    return ""
+  end
+
+  local wc = fn.wordcount()
+  -- when text is selected, show the words in the selection instead
+  if wc.visual_words then
+    return string.format("%d/%d words", wc.visual_words, wc.words)
+  end
+
+  return string.format("%d words", wc.words)
+end
+
 --- show indicator for Chinese IME
 local function ime_state()
   if vim.g.is_mac then
@@ -252,6 +275,10 @@ require("lualine").setup {
       {
         spell,
         color = { fg = "black", bg = "#a7c080" },
+      },
+      {
+        word_count,
+        color = { fg = "#83a598" },
       },
     },
     lualine_x = {
