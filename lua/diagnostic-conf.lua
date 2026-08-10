@@ -1,10 +1,27 @@
 local diagnostic = vim.diagnostic
 local api = vim.api
 
+-- Prose/grammar filetypes handled by harper-ls. Virtual text is scoped to these
+-- so grammar hints show inline, while code LSP diagnostics stay sign-only.
+local grammar_filetypes = {
+  markdown = true, text = true, tex = true, plaintex = true, typst = true,
+}
+
 -- global config for diagnostic
 diagnostic.config {
   underline = false,
-  virtual_text = false,
+  -- 0.10+ function form: called per (namespace, bufnr). Return an opts table to
+  -- enable virtual_text for that buffer, or false to leave it sign-only.
+  virtual_text = function(_, bufnr)
+    if grammar_filetypes[vim.bo[bufnr].filetype] then
+      return {
+        spacing = 2,
+        prefix = "▸",
+        source = false,
+      }
+    end
+    return false
+  end,
   virtual_lines = false,
   signs = {
     text = {
