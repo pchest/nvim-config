@@ -38,6 +38,9 @@ vim.fn.sign_define("DiagnosticSignInfo",  { text = "ℹ️",  texthl = "Diagnost
 vim.fn.sign_define("DiagnosticSignHint",  { text = "",  texthl = "DiagnosticSignHint" })
 
 -- Global diagnostic behavior (from old code)
+-- NOTE: the authoritative diagnostic.config() lives in lua/diagnostic-conf.lua,
+-- which loads after this and overrides these values. Edit that file to change
+-- global diagnostic display (signs, virtual_text, float, etc.).
 vim.diagnostic.config({
   underline = false,
   virtual_text = false,
