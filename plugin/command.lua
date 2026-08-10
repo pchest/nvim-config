@@ -35,6 +35,49 @@ end, {
   end,
 })
 
+-- Count words in the current LaTeX file using texcount, ignoring math,
+-- markup, comments, and the preamble (unlike the statusline word count).
+vim.api.nvim_create_user_command("TeXCount", function()
+  if vim.fn.executable("texcount") == 0 then
+    vim.api.nvim_echo({ { "texcount not found in PATH" } }, true, { err = true })
+    return
+  end
+
+  local file_path = vim.fn.expand("%:p")
+  if file_path == "" then
+    vim.api.nvim_echo({ { "TeXCount: buffer has no file on disk" } }, true, { err = true })
+    return
+  end
+
+  if vim.bo.modified then
+    vim.print("TeXCount: counting the last saved version (buffer has unsaved changes)")
+  end
+
+  -- -0 gives a terse, single-line summary; -sum folds captions/headers into
+  -- the total. We parse the "Words in text" figure from the full output.
+  vim.system({ "texcount", "-brief", file_path }, { text = true }, function(result)
+    vim.schedule(function()
+      if result.code ~= 0 then
+        local msg = string.format("TeXCount failed: %s", (result.stderr or ""):gsub("%s+$", ""))
+        vim.api.nvim_echo({ { msg } }, true, { err = true })
+        return
+      end
+
+      -- -brief output looks like: "722+9+12 (1/0/0/0) File: <path>"
+      -- where the first number is words in text.
+      local words = result.stdout:match("^(%d+)")
+      if words then
+        vim.print(string.format("Words in text: %s", words))
+      else
+        vim.print(result.stdout:gsub("%s+$", ""))
+      end
+    end)
+  end)
+end, {
+  desc = "Count words in text of current LaTeX file (via texcount, ignores math/markup)",
+  force = true,
+})
+
 -- JSON format part of or the whole file
 vim.api.nvim_create_user_command("JSONFormat", function(context)
   local range = context["range"]
