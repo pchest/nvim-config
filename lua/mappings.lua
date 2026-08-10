@@ -22,6 +22,9 @@ keymap.set("n", "<leader>ai", "<cmd>CodeCompanionChat Toggle<cr>", { silent = tr
 
 keymap.set("n", "<leader>tw", ":%s/\\s\\+$//e<CR>", { desc = "remove trailing space" })
 
+-- Count words in text of current LaTeX file (via texcount, ignores math/markup)
+keymap.set("n", "<leader>ln", "<cmd>TeXCount<cr>", { silent = true, desc = "LaTeX word count" })
+
 -- Turn the word under cursor to upper case
 keymap.set("i", "<c-u>", "<Esc>viwUea")
 
