@@ -222,7 +222,7 @@ end
 if have("harper-ls") then
   vim.lsp.config("harper", {
     cmd = { "harper-ls", "--stdio" },
-    filetypes = { "markdown", "text", "tex", "typst" },
+    filetypes = { "markdown", "text", "tex", "typst", "quarto" },
     settings = {
       ["harper-ls"] = {
         userDictPath = "",

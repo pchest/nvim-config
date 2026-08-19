@@ -29,6 +29,18 @@ local plugin_specs = {
   { "hrsh7th/cmp-cmdline", lazy = true },
   { "quangnguyen30192/cmp-nvim-ultisnips", lazy = true },
   { "karb94/neoscroll.nvim", opts = {}, lazy = true },
+  {
+    "pranphy/pamdex.nvim",
+    keys = {
+      { "<leader>pm", function() require("pamdex").compile_start() end, desc = "Pamdex compile" },
+      { "<leader>pv", function() require("pamdex").open_it() end, desc = "Pamdex open" },
+    },
+    config = function()
+      require("pamdex").setup({
+        pdf_viewer = vim.g.is_mac and "open" or "zathura",
+      })
+    end,
+  },
   --{
   --  "hrsh7th/nvim-cmp",
   --  name = "nvim-cmp",
