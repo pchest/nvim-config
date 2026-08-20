@@ -219,22 +219,32 @@ local plugin_specs = {
     build = ":TSUpdate",
     config = function()
       vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site")
-  
-      require("nvim-treesitter").setup({
-        ensure_installed = {
-          "markdown",
-          "markdown_inline",
-          "r",
-          "rnoweb",
-          "yaml",
-          "python",
-          "vim",
-          "vimdoc",
-          "lua",
-          "luadoc",
-        },
-        -- disable = { "latex", "tex" },
-        highlight = { enable = true },
+
+      local ts = require("nvim-treesitter")
+      ts.setup({})
+
+      -- On the `main` branch, setup() no longer installs parsers or enables
+      -- highlighting. Install parsers explicitly and start highlighting via a
+      -- FileType autocmd.
+      local ensure_installed = {
+        "markdown",
+        "markdown_inline",
+        "r",
+        "rnoweb",
+        "yaml",
+        "python",
+        "vim",
+        "vimdoc",
+        "lua",
+        "luadoc",
+      }
+      ts.install(ensure_installed)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = ensure_installed,
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
+        end,
       })
     end,
   },
