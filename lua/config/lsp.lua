@@ -219,7 +219,16 @@ end
 if have("harper-ls") then
   vim.lsp.config("harper", {
     cmd = { "harper-ls", "--stdio" },
-    filetypes = { "markdown", "text", "tex", "typst" },
+    filetypes = { "markdown", "text", "tex", "typst", "quarto" },
+    -- Neovim sends the filetype as the LSP languageId. harper-ls has no
+    -- "quarto" parser, so map quarto buffers to its markdown parser (which
+    -- lints prose and skips code chunks).
+    get_language_id = function(_, ftype)
+      if ftype == "quarto" then
+        return "markdown"
+      end
+      return ftype
+    end,
     settings = {
       ["harper-ls"] = {
         userDictPath = "",
