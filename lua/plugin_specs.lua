@@ -746,6 +746,21 @@ local plugin_specs = {
       "ravitemer/codecompanion-history.nvim"
     },
   },
+  {
+    "alex35mil/pi.nvim",
+
+    -- Optional: required only for `:PiPasteImage` (clipboard image paste).
+    dependencies = { "HakonHarnes/img-clip.nvim" },
+
+    -- Leave opts empty for defaults. NOTE: never keep the README `{ ... }`
+    -- placeholders here -- at the top level of a Lua chunk `...` expands to the
+    -- arguments require() passes to the chunk, so `{ ... }` evaluates to
+    -- `{ "plugin_specs" }`, which wipes pi.nvim's default layout/models tables.
+    opts = {
+      -- layout = { default = "side", side = { width = 90 } },
+      -- models = { "anthropic/claude-sonnet-4-5", "openai/gpt-5-mini" },
+    },
+  },
   --{
   -- "olimorris/codecompanion.nvim",
   -- dependencies = {
