@@ -845,6 +845,21 @@ local plugin_specs = {
       "ravitemer/codecompanion-history.nvim"
     },
   },
+  {
+    "alex35mil/pi.nvim",
+
+    -- Optional: required only for `:PiPasteImage` (clipboard image paste).
+    dependencies = { "HakonHarnes/img-clip.nvim" },
+
+    -- Leave opts empty for defaults. NOTE: never keep the README `{ ... }`
+    -- placeholders here -- at the top level of a Lua chunk `...` expands to the
+    -- arguments require() passes to the chunk, so `{ ... }` evaluates to
+    -- `{ "plugin_specs" }`, which wipes pi.nvim's default layout/models tables.
+    opts = {
+      -- layout = { default = "side", side = { width = 90 } },
+      -- models = { "anthropic/claude-sonnet-4-5", "openai/gpt-5-mini" },
+    },
+  },
   --{
   -- "olimorris/codecompanion.nvim",
   -- dependencies = {
@@ -975,6 +990,26 @@ local plugin_specs = {
       -- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
       vim.g.loaded_netrwPlugin = 1
     end,
+  },
+  {
+    "2giosangmitom/sqmeow.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    version = "*",
+    build = function()
+      -- Downloads the matching release binary; pass 'curl', 'wget', 'powershell' or 'cargo' to choose.
+      require("sqmeow").install()
+    end,
+    -- sqmeow resolves `border = 'default'` against 'winborder' and hands nui an explicit
+    -- 'none'; nui refuses a titled border with style none, so every dialog errors out.
+    -- Its dialogs always draw a title, so they need a real border.
+    opts = { ui = { border = "rounded" } },
+    cmd = "Sqmeow",
+    keys = {
+      { "<leader>Dd", "<cmd>Sqmeow toggle<cr>", desc = "Toggle" },
+      { "<leader>Dc", "<cmd>Sqmeow cancel<cr>", desc = "Cancel" },
+      { "<leader>Da", "<cmd>Sqmeow add<cr>", desc = "Add Connection" },
+      { "<leader>Ds", "<cmd>Sqmeow scratch<cr>", desc = "New Scratchpad" },
+    },
   },
   {
   "3rd/diagram.nvim",
