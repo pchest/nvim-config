@@ -24,7 +24,7 @@ require("codecompanion").setup({
           name = "llama_cpp",
           formatted_name = "llama.cpp",
           env = {
-            url = "http://10.11.135.7:8281", -- llama-server default host/port
+            url = "http://10.235.209.4:8281", -- llama-server default host/port
             api_key = "llama-cpp",         -- ignored unless llama-server started with --api-key
             chat_url = "/v1/chat/completions",
             models_endpoint = "/v1/models",
