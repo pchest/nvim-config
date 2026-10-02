@@ -39,6 +39,26 @@ require("codecompanion").setup({
           },
         })
       end,
+      halogen_qwen3_8_flash_next = function()
+        return require("codecompanion.adapters").extend("openai_compatible", {
+          name = "halogen_qwen3_8_flash_next",
+          formatted_name = "halogen-qwen3.8-flash-next",
+          env = {
+            url = "http://10.235.209.4:8731", -- llama-server default host/port
+            api_key = "llama-cpp",         -- ignored unless llama-server started with --api-key
+            chat_url = "/v1/chat/completions",
+            models_endpoint = "/v1/models",
+          },
+          -- llama.cpp usually serves a single model, so you can pin it here to
+          -- skip the /v1/models lookup. Set to the id llama-server reports, or
+          -- remove this schema block to let CodeCompanion query the endpoint.
+          schema = {
+            model = {
+              default = "halogen-qwen3.8-flash-next",
+            },
+          },
+        })
+      end,
     },
   },
   interactions = {
