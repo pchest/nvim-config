@@ -49,12 +49,34 @@ require("codecompanion").setup({
             chat_url = "/v1/chat/completions",
             models_endpoint = "/v1/models",
           },
-          -- llama.cpp usually serves a single model, so you can pin it here to
-          -- skip the /v1/models lookup. Set to the id llama-server reports, or
-          -- remove this schema block to let CodeCompanion query the endpoint.
+          handlers = {
+            -- This gateway streams whenever the `stream` key is absent, so the
+            -- non-streaming paths (background asks: chat titles, compaction,
+            -- tool judging) receive SSE text they cannot JSON-decode and
+            -- silently get nil back. Say "no" explicitly.
+            setup = function(self)
+              if self.opts and self.opts.stream then
+                self.parameters.stream = true
+                self.parameters.stream_options = { include_usage = true }
+              else
+                self.parameters.stream = false
+              end
+              return true
+            end,
+          },
+          -- Pin the model to skip the /v1/models lookup, and hand CodeCompanion
+          -- the context window it would otherwise discard: the stock
+          -- openai_compatible get_models() keeps only `model.id`, and without
+          -- meta.context_window the context editing and compaction paths are
+          -- skipped without warning.
           schema = {
             model = {
               default = "halogen-qwen3.8-flash-next",
+              choices = {
+                ["halogen-qwen3.8-flash-next"] = {
+                  meta = { context_window = 262144 },
+                },
+              },
             },
           },
         })
