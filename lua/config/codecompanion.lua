@@ -32,11 +32,11 @@ require("codecompanion").setup({
           -- llama.cpp usually serves a single model, so you can pin it here to
           -- skip the /v1/models lookup. Set to the id llama-server reports, or
           -- remove this schema block to let CodeCompanion query the endpoint.
-          schema = {
-            model = {
-              default = "llama-cpp",
-            },
-          },
+          --schema = {
+          --  model = {
+          --    default = "llama-cpp",
+          --  },
+          --},
         })
       end,
       halogen_qwen3_8_flash_next = function()
